@@ -1,104 +1,118 @@
 <?php
 namespace App\Entity;
 
+use DateTime;
+use Doctrine\ORM\Mapping as ORM;
+
+
+/**
+ * @ORM\Table(name="`user`")
+ * @ORM\Entity
+*/
 class User
 {
 
-      private string $firstName;
-      private string $middleName;
-      private string $lastName;
-      private string $phone;
+       /**
+        * @ORM\Column(name="id", type="bigint", unique=true)
+        * @ORM\Id
+        * @ORM\GeneratedValue(strategy="IDENTITY")
+       */
+       private ?int $id = null;
 
 
-      public function __construct(string $firstName, string $middleName, string $lastName, string $phone)
-      {
-          $this->firstName  = $firstName;
-          $this->middleName = $middleName;
-          $this->lastName   = $lastName;
-          $this->phone      = $phone;
-      }
-
-
-    /**
-     * @return string
-     */
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-
-    /**
-     * @param string $firstName
-     */
-    public function setFirstName(string $firstName): void
-    {
-        $this->firstName = $firstName;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getMiddleName(): string
-    {
-        return $this->middleName;
-    }
-
-
-    /**
-     * @param string $middleName
-     */
-    public function setMiddleName(string $middleName): void
-    {
-        $this->middleName = $middleName;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
-
-
-    /**
-     * @param string $lastName
-     */
-    public function setLastName(string $lastName): void
-    {
-        $this->lastName = $lastName;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getPhone(): string
-    {
-        return $this->phone;
-    }
-
-
-    /**
-     * @param string $phone
-     */
-    public function setPhone(string $phone): void
-    {
-        $this->phone = $phone;
-    }
+       /**
+        * @var string
+        *
+        * @ORM\Column(type="string", length=32, nullable=false)
+       */
+       private string $login;
 
 
 
-    public function toArray(): array
-    {
-        return [
-            'firstName' => $this->firstName,
-            'middleName' => $this->middleName,
-            'lastName' => $this->lastName,
-            'phone' => $this->phone,
-        ];
-    }
+       /**
+        * @ORM\Column(type="created_at", type="datetime", nullable=false)
+       */
+       private DateTime $createdAt;
+
+
+
+       /**
+        * @ORM\Column(type="updated_at", type="datetime", nullable=false)
+       */
+       private DateTime $updatedAt;
+
+
+
+
+       /**
+        * @return int|null
+       */
+       public function getId(): ?int
+       {
+            return $this->id;
+       }
+
+
+
+
+       /**
+        * @return string
+       */
+       public function getLogin(): string
+       {
+            return $this->login;
+       }
+
+
+       /**
+        * @param string $login
+       */
+       public function setLogin(string $login): void
+       {
+           $this->login = $login;
+       }
+
+
+
+
+       /**
+        * @return DateTime
+       */
+       public function getCreatedAt(): DateTime
+       {
+           return $this->createdAt;
+       }
+
+
+
+       public function setCreatedAt(): void
+       {
+           $this->createdAt = new DateTime();
+       }
+
+
+
+
+       public function getUpdatedAt(): DateTime
+       {
+            return $this->updatedAt;
+       }
+
+
+
+       public function setUpdatedAt(): void
+       {
+            $this->updatedAt = new DateTime();
+       }
+
+
+       public function toArray()
+       {
+            return [
+               'id'    => $this->id,
+               'login' => $this->login,
+                'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
+                'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s')
+            ];
+       }
 }
