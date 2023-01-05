@@ -26,8 +26,8 @@ class UserController extends AbstractController
       */
       public function list(): Response
       {
-           # 'users/list.twig'
-           return $this->render('users/user-content.twig', [
+           # e.g renders templates: 'users/list.twig', 'users/user-content.twig', 'users/user-table.twig'
+           return $this->render('users/user-table.twig', [
               'users' => $this->userManager->getUserList()
            ]);
       }

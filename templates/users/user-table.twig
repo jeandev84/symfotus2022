@@ -1,0 +1,32 @@
+{% extends 'layout.twig' %}
+
+{% import 'macros.twig' as macros %}
+
+
+{% block title %}
+   User table
+{% endblock %}
+
+{% block body %}
+    <table>
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th>Фамилия</th>
+                <th>Телефон</th>
+            </tr>
+        </thead>
+        <tbody>
+{#         {% for user in users %}#}
+{#             <tr>#}
+{#                 <td>{{ user.firstName }}</td>#}
+{#                 <td>{{ user.middleName }}</td>#}
+{#                 <td>{{ user.lastName }}</td>#}
+{#                 <td>{{ user.phone }}</td>#}
+{#             </tr>#}
+{#         {% endfor %}#}
+        {{ macros.user_table_body(users) }}
+        </tbody>
+    </table>
+{% endblock %}

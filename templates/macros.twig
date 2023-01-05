@@ -1,0 +1,22 @@
+{% macro user_table_body(users) %}
+    {% for user in users %}
+{#        <tr>#}
+{#            <td>{{ user.firstName|lower }}</td>#}
+{#            <td>{{ user.middleName|upper }}</td>#}
+{#            <td>{{ user.lastName }}</td>#}
+{#            <td>({{ user.phone }})</td>#}
+{#        </tr>#}
+        {# https://stackoverflow.com/questions/9548601/calling-a-macro-inside-another-macro-in-twig #}
+        {# _self used for calling others macros inside macros self. #}
+        {{ _self.user_table_row(user) }}
+    {% endfor %}
+{% endmacro %}
+
+{% macro user_table_row(user) %}
+    <tr>
+        <td>{{ user.firstName|lower }}</td>
+        <td>{{ user.middleName|upper }}</td>
+        <td>{{ user.lastName }}</td>
+        <td>({{ user.phone }})</td>
+    </tr>
+{% endmacro %}
