@@ -5,40 +5,30 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 
-/**
- * @ORM\Table(name="`user`")
- * @ORM\Entity
-*/
+#[ORM\Table(name: '`user`')]
+#[ORM\Entity]
 class User
 {
 
-       /**
-        * @ORM\Column(name="id", type="bigint", unique=true)
-        * @ORM\Id
-        * @ORM\GeneratedValue(strategy="IDENTITY")
-       */
+       #[ORM\Column( name: 'id', type: 'bigint', unique: true)]
+       #[ORM\Id]
+       #[ORM\GeneratedValue(strategy: "IDENTITY")]
        private ?int $id = null;
 
 
-       /**
-        * @var string
-        *
-        * @ORM\Column(type="string", length=32, nullable=false)
-       */
+
+       #[ORM\Column(type: 'string', length: 32, nullable: false)]
        private string $login;
 
 
 
-       /**
-        * @ORM\Column(type="created_at", type="datetime", nullable=false)
-       */
+       #[ORM\Column(name: 'created_at', type: 'datetime', nullable: false)]
        private DateTime $createdAt;
 
 
 
-       /**
-        * @ORM\Column(type="updated_at", type="datetime", nullable=false)
-       */
+
+       #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: false)]
        private DateTime $updatedAt;
 
 
@@ -62,6 +52,8 @@ class User
        {
             return $this->login;
        }
+
+
 
 
        /**
@@ -106,13 +98,13 @@ class User
        }
 
 
-       public function toArray()
+       public function toArray(): array
        {
             return [
                'id'    => $this->id,
                'login' => $this->login,
-                'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-                'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s')
+               'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
+               'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s')
             ];
        }
 }

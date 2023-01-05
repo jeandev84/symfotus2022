@@ -2,43 +2,29 @@
 namespace App\Controller;
 
 use App\Manager\UserManager;
+use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-
+use Symfony\Component\Routing\Annotation\Route;
 
 
 class UserController extends AbstractController
 {
+      private UserService $userService;
 
-      private UserManager $userManager;
 
-
-      public function __construct(UserManager $userManager)
+      public function __construct(UserService $userService)
       {
-           $this->userManager = $userManager;
+            $this->userService = $userService;
       }
 
 
 
-
-      /**
-       * @return Response
-      */
+      #[Route('/users', name: 'users_list', methods: ['GET'])]
       public function list(): Response
       {
-           # e.g renders templates:
-           # 'users/list.twig'
-           # 'users/user-content.twig'
-           # 'users/user-table.twig'
-           /*
-            return $this->render('users/user-vue.twig', [
-              'users' => $this->userManager->getUserList()
-            ]);
-           */
+           $user = $this->userService->create('My User');
 
-           # 'users/user-vue.twig'
-           return $this->render('users/user-vue.twig', [
-              'users' => json_encode($this->userManager->getUsersListVue())
-           ]);
+           return $this->json($user->toArray());
       }
 }

@@ -1,7 +1,7 @@
-hello_world:
-    path: /hello/world
-    controller: App\Controller\HelloController::world
-
-users_list:
-    path: /users
-    controller: App\Controller\UserController::list
+#hello_world:
+#    path: /hello/world
+#    controller: App\Controller\HelloController::world
+#
+#users_list:
+#    path: /users
+#    controller: App\Controller\UserController::list
