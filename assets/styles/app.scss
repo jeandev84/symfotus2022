@@ -1,4 +1,6 @@
-$color: darkcyan;
+@import "~bootstrap/scss/bootstrap";
+
+$color: lightyellow; /* darkcyan */
 
 body {
     background-color: $color;

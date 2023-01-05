@@ -6,11 +6,24 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.css';
+// import './styles/app.css';
 
 
-// uncomment this line if you use sass
-// import './styles/app.scss';
+// uncomment this line for import sass
+import './styles/app.scss';
+
+
+// Import Vue
+import Vue from "vue";
+import App from './components/App';
+
+
 
 // start the Stimulus application
 import './bootstrap';
+
+
+new Vue({
+  el: '#app',
+  render: h => h(App)
+});
