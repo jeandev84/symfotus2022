@@ -35,6 +35,17 @@ class UserController extends AbstractController
 
 
 
+      private function findUsersByCriteria()
+      {
+          /* $users = $this->userService->findUsersByLogin('Ivan Ivanov'); */
+
+          $users = $this->userService->findUsersByCriteria('Tolkien');
+
+          return $this->json(array_map(static fn(User $user) => $user->toArray(), $users));
+      }
+
+
+
       private function addSubscription()
       {
           $author   = $this->userService->create('J.R.R Tolkien');
