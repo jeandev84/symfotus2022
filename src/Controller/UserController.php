@@ -23,8 +23,30 @@ class UserController extends AbstractController
       #[Route('/users', name: 'users_list', methods: ['GET'])]
       public function list(): Response
       {
-           $user = $this->userService->create('My User');
+           $author = $this->userService->create('J.R.R Tolkien');
+           $this->userService->postTweet($author, 'The Load of the Rings');
+           $this->userService->postTweet($author, 'The Hobbit');
 
-           return $this->json($user->toArray());
+           $authorId = $author->getId();
+           $this->userService->clearEntityManager();
+
+           $author = $this->userService->findUser($authorId);
+
+           return $this->json($author->toArray());
+      }
+
+
+      public function addTweetUsingClearEntityManager()
+      {
+          $author = $this->userService->create('J.R.R Tolkien');
+          $this->userService->postTweet($author, 'The Load of the Rings');
+          $this->userService->postTweet($author, 'The Hobbit');
+
+          $authorId = $author->getId();
+          $this->userService->clearEntityManager();
+
+          $author = $this->userService->findUser($authorId);
+
+          return $this->json($author->toArray());
       }
 }

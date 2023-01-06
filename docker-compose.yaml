@@ -24,7 +24,7 @@ services:
    twitter-postgres:
      image: postgres:12
      ports:
-       - 15432:5432
+       - '15432:5432'
      container_name: 'postgresql'
      working_dir: /app
      restart: always

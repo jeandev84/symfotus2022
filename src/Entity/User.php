@@ -2,6 +2,8 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -30,6 +32,19 @@ class User
 
        #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: false)]
        private DateTime $updatedAt;
+
+
+
+
+      #[ORM\OneToMany(mappedBy: 'author', targetEntity: 'Tweet')]
+      private Collection $tweets;
+
+
+
+      public function __construct()
+      {
+           $this->tweets = new ArrayCollection();
+      }
 
 
 
@@ -98,13 +113,23 @@ class User
        }
 
 
+
+       public function addTweet(Tweet $tweet): void
+       {
+           if (!$this->tweets->contains($tweet)) {
+               $this->tweets->add($tweet);
+           }
+       }
+
+
        public function toArray(): array
        {
             return [
-               'id'    => $this->id,
-               'login' => $this->login,
+               'id'        => $this->id,
+               'login'     => $this->login,
                'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-               'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s')
+               'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
+               'tweets'    => array_map(static fn(Tweet $tweet) => $tweet->toArray(), $this->tweets->toArray())
             ];
        }
 }
