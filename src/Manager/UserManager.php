@@ -89,4 +89,38 @@ class UserManager
 
           return $user;
     }
+
+
+
+
+
+    public function findUsersWithQueryBuilder(string $login): array
+    {
+          $queryBuilder = $this->entityManager->createQueryBuilder();
+
+          # DQL
+          $queryBuilder->select('u')
+                       ->from(User::class, 'u')
+                       ->andWhere($queryBuilder->expr()->like('u.login', ':userLogin'))
+                       //->orWhere($queryBuilder->expr()->andX())
+                       ->setParameter('userLogin', "%$login%");
+
+
+          return $queryBuilder->getQuery()->getResult();
+    }
+
+
+    public function updateUserLoginWithQueryBuilder(int $userId, string $login): void
+    {
+          $queryBuilder = $this->entityManager->createQueryBuilder();
+
+          $queryBuilder->update(User::class, 'u')
+                       ->set('u.login', ':userLogin')
+                       ->where($queryBuilder->expr()->eq('u.id', ':userId'))
+                       ->setParameter('userId', $userId)
+                       ->setParameter('userLogin', $login);
+
+
+          $queryBuilder->getQuery()->execute();
+    }
 }

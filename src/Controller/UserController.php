@@ -22,12 +22,43 @@ class UserController extends AbstractController
       #[Route('/demo', name: 'demo', methods: ['GET'])]
       public function demo(): Response
       {
-          $user = $this->userManager->create('Terry Pratchett');
-          sleep(1);
+           /*
+           $user = $this->userManager->findUser(3);
+           $this->userManager->updateUserLoginWithQueryBuilder($user->getId(), 'User is updated');
+           */
 
-          $this->userManager->updateUserLogin($user->getId(), 'Lewis Carroll');
+           $userId = 3;
+           $user = $this->userManager->findUser($userId);
+           $this->userManager->updateUserLoginWithQueryBuilder($user->getId(), 'User is updated twice');
+           $this->userManager->clearEntityManager();
+           $user = $this->userManager->findUser($userId);
+
+           return $this->json($user->toArray());
+      }
+
+
+
+
+
+      public function updateUserLogin()
+      {
+          $userId = 3;
+          $user = $this->userManager->findUser($userId);
+          $this->userManager->updateUserLoginWithQueryBuilder($user->getId(), 'User is updated twice');
+          $this->userManager->clearEntityManager();
+          $user = $this->userManager->findUser($userId);
 
           return $this->json($user->toArray());
+      }
+
+
+
+
+      public function searchUsersByLogin()
+      {
+          $users = $this->userManager->findUsersWithQueryBuilder('Lewis');
+
+          return $this->json(array_map(static fn(User $user) => $user->toArray(), $users));
       }
 
 
