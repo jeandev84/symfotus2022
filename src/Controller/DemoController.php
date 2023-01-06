@@ -5,10 +5,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class HelloController extends AbstractController
+class DemoController extends AbstractController
 {
 
-      #[Route('/hello/world', name: 'hello_world')]
+      #[Route('/demo', name: 'demo')]
       public function world(): Response
       {
            return new Response('<html><body><h1><b>Hello,</b> <i>world</i></h1></body></html>');
