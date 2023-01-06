@@ -1,141 +1,49 @@
 <?php
 namespace App\Service;
 
-use App\Entity\Tweet;
 use App\Entity\User;
-use App\Entity\Subscription;
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\EntityManagerInterface;
-
-
+use App\Manager\SubscriptionManager;
+use App\Manager\TweetManager;
+use App\Manager\UserManager;
 
 class UserBuilderService
 {
+    private TweetManager $tweetManager;
 
-      private EntityManagerInterface $entityManager;
+    private UserManager $userManager;
 
+    private SubscriptionManager $subscriptionManager;
 
-      public function __construct(EntityManagerInterface $entityManager)
-      {
-           $this->entityManager = $entityManager;
-      }
-
-
-      /**
-       * @param string $login
-       * @return User
-      */
-      public function create(string $login): User
-      {
-           $user = new User();
-           $user->setLogin($login);
-           $user->setCreatedAt();
-           $user->setUpdatedAt();
-
-           $this->entityManager->persist($user);
-           $this->entityManager->flush();
-
-           return $user;
-      }
-
-
-
-
-      /**
-       * @param User $author
-       * @param string $text
-       * @return void
-      */
-      public function postTweet(User $author, string $text): void
-      {
-           $tweet = new Tweet();
-           $tweet->setAuthor($author);
-           $tweet->setText($text);
-           $tweet->setCreatedAt();
-           $tweet->setUpdatedAt();
-           $author->addTweet($tweet);
-           $this->entityManager->persist($tweet);
-           $this->entityManager->flush();
-      }
-
-
-     public function clearEntityManager()
-     {
-          $this->entityManager->clear();
-     }
-
-     /**
-      * @param int $id
-      * @return User|null
-     */
-     public function findUser(int $id): ?User
-     {
-          $repository = $this->entityManager->getRepository(User::class);
-          $user       = $repository->find($id);
-
-          return $user instanceof User ? $user : null;
-     }
-
-
-     /**
-      * @param string $login
-      * @return array|object[]
-     */
-     public function findUsersByLogin(string $login)
-     {
-           $repository = $this->entityManager->getRepository(User::class);
-
-           return $repository->findBy(['login' => $login, 'id' => 10]);
-     }
-
-
-     /**
-      * @param string $login
-      * @return array|mixed[]
-     */
-     public function findUsersByCriteria(string $login)
-     {
-           $criteria = Criteria::create();
-
-           /** @noinspection NullPointerExceptionInspection */
-           $criteria->andWhere(Criteria::expr()->contains('login', $login));
-
-           /** @noinspection NullPointerExceptionInspection */
-           $criteria->andWhere(Criteria::expr()->lte('id', 10));
-           # $criteria->andWhere(Criteria::expr()->eq('login', $login));
-
-           $repository = $this->entityManager->getRepository(User::class);
-
-           return $repository->matching($criteria)->toArray();
-     }
-
-
-
-
-    /**
-     * @param User $author
-     * @param User $follower
-     * @return void
-    */
-    public function subscribeUser(User $author, User $follower): void
+    public function __construct(TweetManager $tweetManager, UserManager $userManager, SubscriptionManager $subscriptionManager)
     {
-         $author->addFollower($follower);
-         $follower->addAuthor($author);
-         $this->entityManager->flush();
+        $this->tweetManager = $tweetManager;
+        $this->userManager = $userManager;
+        $this->subscriptionManager = $subscriptionManager;
     }
 
-
-
-    public function addSubscription(User $author, User $follower): void
+    /**
+     * @param string[] $texts
+     */
+    public function createUserWithTweets(string $login, array $texts): User
     {
-        $subscription = new Subscription();
-        $subscription->setAuthor($author);
-        $subscription->setFollower($follower);
-        $subscription->setCreatedAt();
-        $subscription->setUpdatedAt();
-        $author->addSubscriptionFollower($subscription);
-        $follower->addSubscriptionAuthor($subscription);
-        $this->entityManager->persist($subscription);
-        $this->entityManager->flush();
+        $user = $this->userManager->create($login);
+        foreach ($texts as $text) {
+            $this->tweetManager->postTweet($user, $text);
+        }
+
+        return $user;
+    }
+
+    /**
+     * @return User[]
+     */
+    public function createUserWithFollower(string $login, string $followerLogin): array
+    {
+        $user = $this->userManager->create($login);
+        $follower = $this->userManager->create($followerLogin);
+        $this->userManager->subscribeUser($user, $follower);
+        $this->subscriptionManager->addSubscription($user, $follower);
+
+        return [$user, $follower];
     }
 }
