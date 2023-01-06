@@ -1,5 +1,5 @@
 <?php
-namespace App\Symfony;
+namespace App\Symfony\EventSubscriber;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\DBAL\Schema\SchemaException;
