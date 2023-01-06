@@ -22,7 +22,10 @@ class UserController extends AbstractController
       #[Route('/demo', name: 'demo', methods: ['GET'])]
       public function demo(): Response
       {
-          $user = $this->userManager->create('J.R.R. Tolkien');
+          $user = $this->userManager->create('Terry Pratchett');
+          sleep(1);
+
+          $this->userManager->updateUserLogin($user->getId(), 'Lewis Carroll');
 
           return $this->json($user->toArray());
       }
@@ -30,7 +33,31 @@ class UserController extends AbstractController
 
 
 
-      #[Route('/user/create', name: 'user_create', methods: ['POST'])]
+      public function createUserTestingGedmoTimestampable()
+      {
+           $user = $this->userManager->create('Terry Pratchett');
+           sleep(1);
+
+           $this->userManager->updateUserLogin($user->getId(), 'Lewis Carroll');
+
+           return $this->json($user->toArray());
+      }
+
+
+      #[Route('/user/{id}', name: 'user.update', methods: ['PUT'])]
+      public function update()
+      {
+          $user = $this->userManager->updateUserLogin(2, 'UserDemoUpdated');
+
+          [$data, $code] = $user === null ? [null, Response::HTTP_NOT_FOUND] : [$user->toArray(), Response::HTTP_OK];
+
+          return $this->json($data, $code);
+      }
+
+
+
+
+      #[Route('/user/create', name: 'user.create', methods: ['POST'])]
       public function create(): Response
       {
           $user = $this->userManager->create('J.R.R. Tolkien');
@@ -40,7 +67,7 @@ class UserController extends AbstractController
 
 
 
-      #[Route('/users', name: 'users_list', methods: ['GET'])]
+      #[Route('/users', name: 'users.list', methods: ['GET'])]
       public function list(): Response
       {
           $users = $this->userManager->findUsersByCriteria('J.R.R. Tolkien');

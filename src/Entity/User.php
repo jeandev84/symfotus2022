@@ -2,17 +2,23 @@
 
 namespace App\Entity;
 
-use App\Entity\Contract\HasMetaTimestampsInterface;
 use DateTime;
+use App\Entity\Contract\HasMetaTimestampsInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
+
 
 #[ORM\Table(name: '`user`')]
 #[ORM\Entity]
-#[ORM\HasLifecycleCallbacks]
+//#[ORM\HasLifecycleCallbacks]
 class User implements HasMetaTimestampsInterface
 {
+
+    // use TimestampableEntity;
+
     #[ORM\Column(name: 'id', type: 'bigint', unique:true)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -22,9 +28,11 @@ class User implements HasMetaTimestampsInterface
     private string $login;
 
     #[ORM\Column(name: 'created_at', type: 'datetime', nullable: false)]
+    #[Gedmo\Timestampable(on: 'create')]
     private DateTime $createdAt;
 
     #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: false)]
+    #[Gedmo\Timestampable(on: 'update')]
     private DateTime $updatedAt;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: 'Tweet')]
@@ -75,7 +83,7 @@ class User implements HasMetaTimestampsInterface
     }
 
 
-    #[ORM\PrePersist]
+//    #[ORM\PrePersist]
     public function setCreatedAt(): void {
         $this->createdAt = new DateTime();
     }
@@ -85,7 +93,8 @@ class User implements HasMetaTimestampsInterface
     }
 
 
-    #[ORM\PrePersist]
+//    #[ORM\PrePersist]
+//    #[ORM\PreUpdate]
     public function setUpdatedAt(): void {
         $this->updatedAt = new DateTime();
     }
