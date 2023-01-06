@@ -3,7 +3,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Manager\UserManager;
-use App\Service\UserService;
+use App\Service\UserBuilderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,10 +11,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
-      private UserService $userService;
+      private UserBuilderService $userService;
 
 
-      public function __construct(UserService $userService)
+      public function __construct(UserBuilderService $userService)
       {
             $this->userService = $userService;
       }

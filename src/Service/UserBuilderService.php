@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 
 
-class UserService
+class UserBuilderService
 {
 
       private EntityManagerInterface $entityManager;
