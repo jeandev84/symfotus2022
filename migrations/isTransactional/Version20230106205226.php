@@ -12,6 +12,15 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20230106205226 extends AbstractMigration
 {
+
+    // Если false, то есть при транзанкции миграции доктрин не будет его использовать
+//    public function isTransactional(): bool
+//    {
+//        return false;
+//    }
+
+
+
     public function getDescription(): string
     {
         return '';
