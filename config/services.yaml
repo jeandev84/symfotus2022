@@ -37,19 +37,28 @@ services:
         class: App\Service\GreeterService
         arguments:
             $greet: 'Hello'
-        tags: ['app.greeter_service']
+        tags:
+          - { name: 'app.greeter_service', priority: 30}
+          - { name: 'app.greeter_service', priority: 1}
+          - { name: 'app.greeter_service', priority: 3}
 
     greetings_greeter:
         class: App\Service\GreeterService
         arguments:
             $greet: 'Greetings'
-        tags: ['app.greeter_service']
+        tags:
+          - { name: 'app.greeter_service', priority: 20}
+          - { name: 'app.greeter_service', priority: 2}
+          - { name: 'app.greeter_service', priority: 2}
 
     hi_greeter:
         class: App\Service\GreeterService
         arguments:
             $greet: 'Hi'
-        tags: ['app.greeter_service']
+        tags:
+          - { name: 'app.greeter_service', priority: 10}
+          - { name: 'app.greeter_service', priority: 3}
+          - { name: 'app.greeter_service', priority: 1}
 
 
     # DI formatters
