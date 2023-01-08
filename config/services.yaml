@@ -37,6 +37,9 @@ services:
             $greet: 'Greetings'
 
 
+#    default_formatter:
+#        class: App\Service\FormatService
+
     strong_formatter:
         class: App\Service\FormatService
         factory: ['App\Service\Factory\FormatServiceFactory', 'strongFormatService']
@@ -52,6 +55,10 @@ services:
         factory: ['@App\Service\Factory\FormatServiceFactory', 'headerFormatService']
         arguments: [1]
 
+#    example_using_set_tag_formatter:
+#        class: App\Service\FormatService
+#        calls:
+#            - [ setTag, ['cite']]
 
     App\Controller\FormatController:
         arguments:
