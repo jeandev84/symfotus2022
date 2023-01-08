@@ -23,10 +23,12 @@ class GreeterCompilerPass implements CompilerPassInterface
          // sort by priority
          uasort($greeterServices, static fn(array $tag1, array $tag2) => $tag1[0]['priority'] - $tag2[0]['priority']);
 
+         /* dd($greeterServices); */
          foreach ($greeterServices as $id => $tags) {
              $messageService->addMethodCall('addGreeter', [new Reference($id)]);
          }
 
+         /* dd($messageService); */
          // это тоже самое писать в разделе "services" внутри файла./config/services.yaml
          // services:
          //   ...

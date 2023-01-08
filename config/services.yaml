@@ -26,57 +26,23 @@ services:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
 
-
-    App\Service\GreeterService:
-        arguments:
-            $greet: 'Greetings'
-
-
-    # DI Greeters
-    hello_greeter:
-        class: App\Service\GreeterService
-        arguments:
-            $greet: 'Hello'
-        tags:
-          - { name: 'app.greeter_service', priority: 30}
-          - { name: 'app.greeter_service', priority: 1}
-          - { name: 'app.greeter_service', priority: 3}
-
-    greetings_greeter:
-        class: App\Service\GreeterService
-        arguments:
-            $greet: 'Greetings'
-        tags:
-          - { name: 'app.greeter_service', priority: 20}
-          - { name: 'app.greeter_service', priority: 2}
-          - { name: 'app.greeter_service', priority: 2}
-
-    hi_greeter:
-        class: App\Service\GreeterService
-        arguments:
-            $greet: 'Hi'
-        tags:
-          - { name: 'app.greeter_service', priority: 10}
-          - { name: 'app.greeter_service', priority: 3}
-          - { name: 'app.greeter_service', priority: 1}
-
-
     # DI formatters
     strong_formatter:
-        class: App\Service\FormatService
-        factory: ['App\Service\Factory\FormatServiceFactory', 'strongFormatService']
-        tags: ['app.formatter_service']
+       class: App\Service\FormatService
+       factory: ['App\Service\Factory\FormatServiceFactory', 'strongFormatService']
+       tags: ['app.formatter_service']
 
 
     cite_formatter:
-        class: App\Service\FormatService
-        factory: ['@App\Service\Factory\FormatServiceFactory', 'citeFormatService']
+       class: App\Service\FormatService
+       factory: ['@App\Service\Factory\FormatServiceFactory', 'citeFormatService']
 
 
     main_header_formatter:
         class: App\Service\FormatService
         factory: ['@App\Service\Factory\FormatServiceFactory', 'headerFormatService']
-        arguments: [1]
+        arguments:
+            $level: 1
         tags: ['app.formatter_service']
 
     cite2_formatter:
@@ -96,6 +62,35 @@ services:
         tags: ['app.formatter_service']
 
 
+    # Inject controller
     App\Controller\Format\FormatAdvancedController:
         arguments:
             $formatService: '@list_formatter'
+
+
+    # DI Greeters
+    App\Service\GreeterService:
+        arguments:
+            $greet: 'Greetings'
+
+    hello_greeter:
+        class: App\Service\GreeterService
+        arguments:
+            $greet: 'Hello'
+        tags:
+            - { name: 'app.greeter_service', priority: 3 }
+
+    greetings_greeter:
+        class: App\Service\GreeterService
+        arguments:
+            $greet: 'Greetings'
+        tags:
+            - { name: 'app.greeter_service', priority: 2 }
+
+    hi_greeter:
+        class: App\Service\GreeterService
+        arguments:
+            $greet: 'Hi'
+        tags:
+            - { name: 'app.greeter_service', priority: 1 }
+

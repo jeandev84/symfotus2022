@@ -23,7 +23,7 @@ class FormatAdvancedController extends AbstractController
 
 
     #[Route('/format-advanced', name: 'format.advanced')]
-    public function format()
+    public function formatAdvanced()
     {
         $result = $this->formatService->format($this->messageService->printMessages('world'));
 
