@@ -1,0 +1,101 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+    App\Symfony\EventSubscriber\MigrationEventSubscriber:
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+
+
+    App\Service\GreeterService:
+        arguments:
+            $greet: 'Greetings'
+
+
+    # DI Greeters
+    hello_greeter:
+        class: App\Service\GreeterService
+        arguments:
+            $greet: 'Hello'
+        tags:
+          - { name: 'app.greeter_service', priority: 30}
+          - { name: 'app.greeter_service', priority: 1}
+          - { name: 'app.greeter_service', priority: 3}
+
+    greetings_greeter:
+        class: App\Service\GreeterService
+        arguments:
+            $greet: 'Greetings'
+        tags:
+          - { name: 'app.greeter_service', priority: 20}
+          - { name: 'app.greeter_service', priority: 2}
+          - { name: 'app.greeter_service', priority: 2}
+
+    hi_greeter:
+        class: App\Service\GreeterService
+        arguments:
+            $greet: 'Hi'
+        tags:
+          - { name: 'app.greeter_service', priority: 10}
+          - { name: 'app.greeter_service', priority: 3}
+          - { name: 'app.greeter_service', priority: 1}
+
+
+    # DI formatters
+    strong_formatter:
+        class: App\Service\FormatService
+        factory: ['App\Service\Factory\FormatServiceFactory', 'strongFormatService']
+        tags: ['app.formatter_service']
+
+
+    cite_formatter:
+        class: App\Service\FormatService
+        factory: ['@App\Service\Factory\FormatServiceFactory', 'citeFormatService']
+
+
+    main_header_formatter:
+        class: App\Service\FormatService
+        factory: ['@App\Service\Factory\FormatServiceFactory', 'headerFormatService']
+        arguments: [1]
+        tags: ['app.formatter_service']
+
+    cite2_formatter:
+        class: App\Service\FormatService
+        calls:
+            - [ setTag, ['cite']]
+
+    list_formatter:
+        class: App\Service\FormatService
+        calls:
+            - [ setTag, [ 'ol' ] ]
+
+    list_item_formatter:
+        class: App\Service\FormatService
+        calls:
+            - [ setTag, [ 'li' ] ]
+        tags: ['app.formatter_service']
+
+
+    App\Controller\Format\FormatAdvancedController:
+        arguments:
+            $formatService: '@list_formatter'
