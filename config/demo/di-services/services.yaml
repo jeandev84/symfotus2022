@@ -27,31 +27,22 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
 
 
-    # DI Greeters
-    hello_greeter:
-        class: App\Service\GreeterService
-        arguments:
-            $greet: 'Hello'
-        tags: ['app.greeter_service']
+#    App\Symfony\EventListener\MetaTimestampsPrePersistEntityListener:
+#        tags:
+#            - { name: doctrine.event_listener, event: prePersist}
 
-    greetings_greeter:
-        class: App\Service\GreeterService
+
+    App\Service\GreeterService:
         arguments:
             $greet: 'Greetings'
-        tags: ['app.greeter_service']
-
-    hi_greeter:
-        class: App\Service\GreeterService
-        arguments:
-            $greet: 'Hi'
-        tags: ['app.greeter_service']
 
 
-    # DI formatters
+#    default_formatter:
+#        class: App\Service\FormatService
+
     strong_formatter:
         class: App\Service\FormatService
         factory: ['App\Service\Factory\FormatServiceFactory', 'strongFormatService']
-        tags: ['app.formatter_service']
 
 
     cite_formatter:
@@ -63,24 +54,12 @@ services:
         class: App\Service\FormatService
         factory: ['@App\Service\Factory\FormatServiceFactory', 'headerFormatService']
         arguments: [1]
-        tags: ['app.formatter_service']
 
-    cite2_formatter:
-        class: App\Service\FormatService
-        calls:
-            - [ setTag, ['cite']]
-
-    list_formatter:
-        class: App\Service\FormatService
-        calls:
-            - [ setTag, [ 'ol' ] ]
-
-    list_item_formatter:
-        class: App\Service\FormatService
-        calls:
-            - [ setTag, [ 'li' ] ]
-        tags: ['app.formatter_service']
+#    example_using_set_tag_formatter:
+#        class: App\Service\FormatService
+#        calls:
+#            - [ setTag, ['cite']]
 
     App\Controller\FormatController:
         arguments:
-            $formatService: '@list_formatter'
+            $formatService: '@cite_formatter'
