@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Manager\SubscriptionManager;
 use App\Manager\TweetManager;
 use App\Manager\UserManager;
+use Psr\Log\LoggerInterface;
 
 class UserBuilderService
 {
@@ -13,6 +14,10 @@ class UserBuilderService
     private UserManager $userManager;
 
     private SubscriptionManager $subscriptionManager;
+
+
+    private LoggerInterface $logger;
+
 
 
     public function __construct(TweetManager $tweetManager, UserManager $userManager, SubscriptionManager $subscriptionManager)
@@ -46,5 +51,14 @@ class UserBuilderService
         $this->subscriptionManager->addSubscription($user, $follower);
 
         return [$user, $follower];
+    }
+
+
+    /**
+     * @param LoggerInterface $logger
+    */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }
