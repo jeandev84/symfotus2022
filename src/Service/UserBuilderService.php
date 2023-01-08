@@ -14,6 +14,7 @@ class UserBuilderService
 
     private SubscriptionManager $subscriptionManager;
 
+
     public function __construct(TweetManager $tweetManager, UserManager $userManager, SubscriptionManager $subscriptionManager)
     {
         $this->tweetManager = $tweetManager;

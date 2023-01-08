@@ -30,3 +30,29 @@ services:
 #    App\Symfony\EventListener\MetaTimestampsPrePersistEntityListener:
 #        tags:
 #            - { name: doctrine.event_listener, event: prePersist}
+
+
+    App\Service\GreeterService:
+        arguments:
+            $greet: 'Greetings'
+
+
+    strong_formatter:
+        class: App\Service\FormatService
+        factory: ['App\Service\Factory\FormatServiceFactory', 'strongFormatService']
+
+
+    cite_formatter:
+        class: App\Service\FormatService
+        factory: ['@App\Service\Factory\FormatServiceFactory', 'citeFormatService']
+
+
+    main_header_formatter:
+        class: App\Service\FormatService
+        factory: ['@App\Service\Factory\FormatServiceFactory', 'headerFormatService']
+        arguments: [1]
+
+
+    App\Controller\FormatController:
+        arguments:
+            $formatService: '@cite_formatter'
