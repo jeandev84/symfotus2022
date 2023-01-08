@@ -38,8 +38,17 @@ class UserController extends AbstractController
 
       public function createAndFindUserWithTweetsWithDBALQueryBuilder()
       {
+          $user = $this->userBuilderService->createUserWithTweets(
+              'Charles Dickens',
+              ['Oliver Twist', 'The Christmas Carol']
+          );
 
+          $userData = $this->userManager->findUserWithTweetsWithDBALQueryBuilder($user->getId());
+
+          return $this->json($userData);
       }
+
+
 
       public function createAndFindUserWithTweetsWithQueryBuilder()
       {

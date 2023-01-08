@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Format;
 
 use App\Service\FormatService;
 use App\Service\GreeterService;
