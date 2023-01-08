@@ -1,0 +1,26 @@
+<?php
+namespace App\Symfony\Compiler;
+
+use App\Service\MessageService;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
+
+
+class FormatterCompilerPass implements CompilerPassInterface
+{
+
+    public function process(ContainerBuilder $container)
+    {
+        if (! $container->has(MessageService::class)) {
+            return;
+        }
+
+        $messageService    = $container->findDefinition(MessageService::class);
+        $formatterServices = $container->findTaggedServiceIds('app.formatter_service');
+
+        foreach ($formatterServices as $id => $tags) {
+            $messageService->addMethodCall('addFormatter', [new Reference($id)]);
+        }
+    }
+}

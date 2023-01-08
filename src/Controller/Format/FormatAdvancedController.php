@@ -2,7 +2,6 @@
 namespace App\Controller\Format;
 
 use App\Service\FormatService;
-use App\Service\GreeterService;
 use App\Service\MessageService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
