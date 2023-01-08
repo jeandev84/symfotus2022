@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Manager\UserManager;
+use App\Service\UserBuilderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,11 +11,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
-      private UserManager $userManager;
-
-      public function __construct(UserManager $userManager)
+      public function __construct(
+          private UserManager $userManager,
+          private UserBuilderService $userBuilderService
+      )
       {
-          $this->userManager = $userManager;
       }
 
 
@@ -22,26 +23,57 @@ class UserController extends AbstractController
       #[Route('/demo', name: 'demo', methods: ['GET'])]
       public function demo(): Response
       {
-           /*
-           $user = $this->userManager->findUser(3);
-           $this->userManager->updateUserLoginWithQueryBuilder($user->getId(), 'User is updated');
-           */
+           $user = $this->userBuilderService->createUserWithTweets(
+               'Charles Dickens',
+               ['Oliver Twist', 'The Christmas Carol']
+           );
 
-           $userId = 3;
-           $user = $this->userManager->findUser($userId);
-           $this->userManager->updateUserLoginWithQueryBuilder($user->getId(), 'User is updated twice');
-           $this->userManager->clearEntityManager();
-           $user = $this->userManager->findUser($userId);
+           $userData = $this->userManager->findUserWithTweetsWithDBALQueryBuilder($user->getId());
 
-           return $this->json($user->toArray());
+           return $this->json($userData);
       }
 
 
 
 
-
-      public function updateUserLogin()
+      public function createAndFindUserWithTweetsWithDBALQueryBuilder()
       {
+
+      }
+
+      public function createAndFindUserWithTweetsWithQueryBuilder()
+      {
+          $user = $this->userBuilderService->createUserWithTweets(
+              'Charles Dickens',
+              ['Oliver Twist', 'The Christmas Carol']
+          );
+
+          $userData = $this->userManager->findUserWithTweetsWithQueryBuilder($user->getId());
+
+          return $this->json($userData);
+      }
+
+
+      public function updateUserLoginViaDBALQueryBuilder()
+      {
+          $userId = 3;
+          $user = $this->userManager->findUser($userId);
+          $this->userManager->updateUserLoginWithDBALQueryBuilder($user->getId(), 'User is updated by DBAL');
+          $this->userManager->clearEntityManager();
+          $user = $this->userManager->findUser($userId);
+
+          return $this->json($user->toArray());
+      }
+
+
+
+      public function updateUserLoginViaQueryBuilder()
+      {
+          /*
+           $user = $this->userManager->findUser(3);
+           $this->userManager->updateUserLoginWithQueryBuilder($user->getId(), 'User is updated');
+          */
+
           $userId = 3;
           $user = $this->userManager->findUser($userId);
           $this->userManager->updateUserLoginWithQueryBuilder($user->getId(), 'User is updated twice');
