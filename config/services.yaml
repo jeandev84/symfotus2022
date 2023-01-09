@@ -94,3 +94,10 @@ services:
         tags:
             - { name: 'app.greeter_service', priority: 1 }
 
+
+    # Add Some Listeners
+    App\EventListener\DeprecatedApiExceptionListener:
+        tags:
+            #- { name: kernel.event_listener, event: kernel.exception , methods: 'onKernelExceptionMyCustomMethod'}
+            - { name: kernel.event_listener, event: kernel.exception }
+
