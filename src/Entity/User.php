@@ -169,6 +169,18 @@ class User implements HasMetaTimestampsInterface
         }
     }
 
+
+
+    public function removeFollower(User $follower)
+    {
+        if ($this->followers->contains($follower)) {
+            $this->followers->remove($follower);
+        }
+    }
+
+
+
+
     public function addAuthor(User $author): void
     {
         if (!$this->authors->contains($author)) {
@@ -252,5 +264,12 @@ class User implements HasMetaTimestampsInterface
     public function getFollowers(): array
     {
         return $this->followers->toArray();
+    }
+
+
+
+    public function resetFollowers(): void
+    {
+        $this->followers = new ArrayCollection();
     }
 }

@@ -193,7 +193,8 @@ class UserManager
                                 ->add('submit', SubmitType::class)
                                 ->add('followers', CollectionType::class, [
                                      'entry_type'    => LinkedUserType::class,
-                                     'entry_options' => ['label' => false]
+                                     'entry_options' => ['label' => false],
+                                     'allow_add'     => true
                                 ])
                                 ->setMethod('PATCH')
                                 ->getForm();
@@ -205,22 +206,50 @@ class UserManager
 
     /**
      * @param int $userId
-     * @param SaveUserDTO $saveUserDTO
+     * @param SaveUserDTO $userDTO
      * @return false|int|null
     */
-    public function updateUserFromDTO(int $userId, SaveUserDTO $saveUserDTO)
+    public function updateUserFromDTO(int $userId, SaveUserDTO $userDTO)
     {
          /** @var UserRepository $userRepository */
          $userRepository = $this->entityManager->getRepository(User::class);
 
-         /** @var User */
+         /** @var User $user */
          $user = $userRepository->find($userId);
 
          if ($user === null) {
              return false;
          }
 
-         return $this->saveUserFromDTO($user, $saveUserDTO);
+
+         // reset follwers
+         $user->resetFollowers();
+
+
+         // Add followers
+         foreach ($userDTO->followers as $followerData) {
+
+             $followerUserDTO = new SaveUserDTO($followerData);
+
+             /** @var User $followerUser */
+             if (isset($followerData['id'])) {
+
+                 $followerUser = $userRepository->find($followerData['id']);
+
+                 if ($followerUser !== null) {
+                     $this->saveUserFromDTO($followerUser, $followerUserDTO);
+                 }
+
+             } else {
+
+                 $followerUser = new User();
+                 $this->saveUserFromDTO($followerUser, $followerUserDTO);
+             }
+
+             $user->addFollower($followerUser);
+         }
+
+         return $this->saveUserFromDTO($user, $userDTO);
     }
 
 }
