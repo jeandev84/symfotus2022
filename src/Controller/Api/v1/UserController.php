@@ -104,4 +104,12 @@ class UserController extends AbstractController
 
           return new JsonResponse(['success' => true], Response::HTTP_ACCEPTED);
      }
+
+
+
+     #[Route(path: '/api/v1/data', methods: ['POST'])]
+     public function postDataWithTestMessage(Request $request, string $message)
+     {
+          return new JsonResponse(['message' => $message]);
+     }
 }
