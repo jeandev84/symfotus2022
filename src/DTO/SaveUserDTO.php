@@ -29,6 +29,10 @@ class SaveUserDTO
       public array $followers;
 
 
+      /** @var string[] */
+      public array $roles;
+
+
       public function __construct(array $data)
       {
            $this->login     = $data['login'] ?? '';
