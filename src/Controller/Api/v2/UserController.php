@@ -85,4 +85,12 @@ class UserController extends AbstractController
 
         return new JsonResponse($data, $code);
     }
+
+
+
+    #[Route(path: '/customHeader', methods: ['GET'])]
+    public function getCustomHeader(Request $request)
+    {
+         $request->headers->get('My-header');
+    }
 }
