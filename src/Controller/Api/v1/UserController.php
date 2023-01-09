@@ -43,8 +43,8 @@ class UserController extends AbstractController
      {
          $perPage = $request->query->get('perPage');
          $page    = $request->query->get('page');
-         $users = $this->userManager->getUsers($page ?? 0, $perPage ?? 20);
-         $code = empty($users) ? 204 : 200;
+         $users   = $this->userManager->getUsers($page ?? 0, $perPage ?? 20);
+         $code    = empty($users) ? 204 : 200;
 
          return new JsonResponse([
              'users' => array_map(static fn(User $user) => $user->toArray(), $users)
@@ -75,7 +75,8 @@ class UserController extends AbstractController
          $login  = $request->query->get('login');
 
          $result = $this->userManager->updateUser($userId, $login);
+         $code   = $result ? 200 : 404;
 
-         return new JsonResponse(['success' => $result], $result ? 200 : 404);
+         return new JsonResponse(['success' => $result->toArray()], $code);
      }
 }

@@ -3,13 +3,12 @@ namespace App\Controller\Api\v2;
 
 use App\Entity\User;
 use App\Manager\UserManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 #[Route(path: '/api/v2/user')]
@@ -26,8 +25,7 @@ class UserController extends AbstractController
 
 
 
-    #[Route(path: '')]
-    #[Route(methods: ['POST'])]
+    #[Route(path: '', methods: ['POST'])]
     public function saveUserAction(Request $request): JsonResponse
     {
         $login  = $request->request->get('login');
@@ -42,8 +40,7 @@ class UserController extends AbstractController
 
 
 
-    #[Route(path: '')]
-    #[Route(methods: ['GET'])]
+    #[Route(path: '', methods: ['GET'])]
     public function getUsersAction(Request $request): JsonResponse
     {
         $perPage = $request->query->get('perPage');
@@ -57,7 +54,6 @@ class UserController extends AbstractController
 
 
     #[Route(path: '/by-login/{user_login}', methods: ['GET'], priority: 2)]
-    #[Method(['GET'])]
     #[ParamConverter('user', options: ['mapping' => ['user_login' => 'login']])]
     public function getUserByLoginAction(User $user)
     {
@@ -66,8 +62,7 @@ class UserController extends AbstractController
 
 
 
-    #[Route(path: '/{user_id}', requirements: ['user_id' => '\d+'])]
-    #[Method(['DELETE'])]
+    #[Route(path: '/{user_id}', requirements: ['user_id' => '\d+'], methods: ['DELETE'])]
     #[Entity('user', expr: 'repository.find(user_id)')]
     public function deleteUserAction(User $user): JsonResponse
     {
@@ -79,8 +74,7 @@ class UserController extends AbstractController
 
 
 
-    #[Route(path: '')]
-    #[Method(['PATCH'])]
+    #[Route(path: '', methods: ['PATCH'])]
     public function updateUserAction(Request $request): JsonResponse
     {
         $userId = $request->query->get('userId');
