@@ -52,11 +52,10 @@ class UserController extends AbstractController
 
 
 
-     #[Route(path: '', methods: ['DELETE'])]
-     public function deleteUserAction(Request $request): JsonResponse
+     #[Route(path: '/{id}', requirements: ['id' => '\d+'], methods: ['DELETE'])]
+     public function deleteUserAction(int $id): JsonResponse
      {
-          $userId = $request->query->get('userId');
-          $result = $this->userManager->deleteUser($userId);
+          $result = $this->userManager->deleteUser($id);
 
           return new JsonResponse(['success' => $result], $result ? 200 : 404);
      }
