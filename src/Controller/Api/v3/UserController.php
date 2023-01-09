@@ -6,7 +6,9 @@ use App\DTO\SaveUserDTO;
 use App\Entity\User;
 use App\Manager\UserManager;
 //use App\Security\Voter\UserVoter;
+use App\Security\Voter\UserVoter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,10 +21,15 @@ class UserController extends AbstractController
 {
     private UserManager $userManager;
 
-    public function __construct(UserManager $userManager)
+    private AuthorizationCheckerInterface $authorizationChecker;
+
+    public function __construct(UserManager $userManager, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->userManager = $userManager;
+        $this->authorizationChecker = $authorizationChecker;
     }
+
+
 
     #[Route(path: '', methods: ['POST'])]
     public function saveUserAction(Request $request): Response
@@ -36,7 +43,10 @@ class UserController extends AbstractController
         return new JsonResponse($data, $code);
     }
 
+
+
     #[Route(path: '', methods: ['GET'])]
+    #[IsGranted('ROLE_VIEW')]
     public function getUsersAction(Request $request): Response
     {
         $perPage = $request->query->get('perPage');
@@ -51,6 +61,11 @@ class UserController extends AbstractController
     public function deleteUserAction(Request $request): Response
     {
         $userId = $request->query->get('userId');
+        $user   = $this->userManager->findUserById($userId);
+
+        if (! $this->authorizationChecker->isGranted(UserVoter::DELETE, $user)) {
+              return new JsonResponse('Access Denied', Response::HTTP_FORBIDDEN);
+        }
 
         $result = $this->userManager->deleteUserById($userId);
 
