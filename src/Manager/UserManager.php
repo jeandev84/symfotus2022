@@ -18,13 +18,15 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserManager
 {
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private FormFactoryInterface $formFactory
+        private FormFactoryInterface $formFactory,
+        private UserPasswordHasherInterface $userPasswordHasher
     )
     {
 
@@ -54,8 +56,10 @@ class UserManager
     */
     public function saveUserFromDTO(User $user, SaveUserDTO $saveUserDTO): ?int
     {
+         $hashedPassword = $this->userPasswordHasher->hashPassword($user, $saveUserDTO->password);
+
          $user->setLogin($saveUserDTO->login);
-         $user->setPassword($saveUserDTO->password);
+         $user->setPassword($hashedPassword);
          $user->setAge($saveUserDTO->age);
          $user->setIsActive($saveUserDTO->isActive);
 
@@ -160,6 +164,7 @@ class UserManager
     /**
      * @param int $userId
      * @return FormInterface|null
+     * @throws \JsonException
     */
     public function getUpdateForm(int $userId): ?FormInterface
     {
@@ -207,7 +212,7 @@ class UserManager
     /**
      * @param int $userId
      * @param SaveUserDTO $userDTO
-     * @return false|int|null
+     * @return mixed
     */
     public function updateUserFromDTO(int $userId, SaveUserDTO $userDTO)
     {
@@ -250,6 +255,30 @@ class UserManager
          }
 
          return $this->saveUserFromDTO($user, $userDTO);
+    }
+
+
+
+
+    public function findUserById(int $userId): ?User
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->entityManager->getRepository(User::class);
+
+        return $userRepository->find($userId);
+    }
+
+
+
+
+    public function findUserByLogin(string $login): ?User
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->entityManager->getRepository(User::class);
+        /** @var User|null $user */
+        $user = $userRepository->findOneBy(['login' => $login]);
+
+        return $user;
     }
 
 }
