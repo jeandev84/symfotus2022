@@ -37,7 +37,7 @@ class UserController extends AbstractController
          // api/v2/user/form
          $form = $this->userManager->getSaveForm();
          $content = $this->twig->render('users/form.twig', [
-             'userForm' => $form->createView()
+             'form' => $form->createView()
          ]);
 
          return new Response($content);
@@ -62,7 +62,7 @@ class UserController extends AbstractController
          }
 
          $content = $this->twig->render('users/form.twig', [
-             'userForm' => $form->createView()
+             'form' => $form->createView()
          ]);
 
          return new Response($content);
@@ -80,7 +80,7 @@ class UserController extends AbstractController
           }
 
           $content = $this->twig->render('users/form.twig', [
-              'userForm' => $form->createView()
+              'form' => $form->createView()
           ]);
 
           return new Response($content);
@@ -108,7 +108,7 @@ class UserController extends AbstractController
           }
 
           $content = $this->twig->render('users/form.twig', [
-             'userForm' => $form->createView()
+             'form' => $form->createView()
           ]);
 
           return new Response($content);

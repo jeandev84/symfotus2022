@@ -62,7 +62,7 @@ class User implements HasMetaTimestampsInterface
 
 
     #[ORM\Column(type: 'boolean', nullable: false)]
-    private string $isActive;
+    private bool $isActive;
 
     public function __construct()
     {
@@ -238,11 +238,19 @@ class User implements HasMetaTimestampsInterface
 
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getIsActive(): string
+    public function getIsActive(): bool
     {
         return $this->isActive;
     }
 
+
+    /**
+     * @return array
+    */
+    public function getFollowers(): array
+    {
+        return $this->followers->toArray();
+    }
 }
