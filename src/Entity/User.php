@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use DateTime;
 use App\Entity\Contract\HasMetaTimestampsInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,12 +13,10 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 
 #[ORM\Table(name: '`user`')]
-#[ORM\Entity]
-//#[ORM\HasLifecycleCallbacks]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class User implements HasMetaTimestampsInterface
 {
-
-    // use TimestampableEntity;
 
     #[ORM\Column(name: 'id', type: 'bigint', unique:true)]
     #[ORM\Id]
