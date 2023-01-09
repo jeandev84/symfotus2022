@@ -52,6 +52,18 @@ class User implements HasMetaTimestampsInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: 'Subscription')]
     private Collection $subscriptionFollowers;
 
+
+    #[ORM\Column(type: 'string', length: 32, nullable: false)]
+    private string $password;
+
+
+    #[ORM\Column(type: 'integer', nullable: false)]
+    private int $age;
+
+
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private string $isActive;
+
     public function __construct()
     {
         $this->tweets = new ArrayCollection();
@@ -66,6 +78,14 @@ class User implements HasMetaTimestampsInterface
         return $this->id;
     }
 
+
+    /**
+     * @param int|null $id
+     */
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
 
     public function getLogin(): string
     {
@@ -97,6 +117,8 @@ class User implements HasMetaTimestampsInterface
     public function setUpdatedAt(): void {
         $this->updatedAt = new DateTime();
     }
+
+
 
     public function toArray(): array
     {
@@ -167,4 +189,60 @@ class User implements HasMetaTimestampsInterface
             $this->subscriptionFollowers->add($subscription);
         }
     }
+
+
+
+    /**
+     * @param string $password
+     */
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+
+    /**
+     * @param int $age
+     */
+    public function setAge(int $age): void
+    {
+        $this->age = $age;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getAge(): int
+    {
+        return $this->age;
+    }
+
+
+    /**
+     * @param string $isActive
+     */
+    public function setIsActive(string $isActive): void
+    {
+        $this->isActive = $isActive;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getIsActive(): string
+    {
+        return $this->isActive;
+    }
+
 }

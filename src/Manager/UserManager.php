@@ -7,15 +7,36 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 
 class UserManager
 {
 
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private FormFactoryInterface $formFactory
+    )
     {
-        $this->entityManager = $entityManager;
+
+    }
+
+
+
+    public function getSaveForm(): FormInterface
+    {
+         return $this->formFactory->createBuilder()
+                     ->add('login', TextType::class)
+                     ->add('password', PasswordType::class)
+                     ->add('age', IntegerType::class)
+                     ->add('isActive', CheckboxType::class, ['required' => false])
+                     ->add('submit', SubmitType::class)
+                     ->getForm();
     }
 
 

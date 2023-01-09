@@ -102,10 +102,10 @@ services:
             - { name: kernel.event_listener, event: kernel.exception }
 
 
-    App\EventListener\MessageArgumentListener:
-        class: App\EventListener\MessageArgumentListener
-        tags:
-            - { name: kernel.event_listener, event: kernel.controller_arguments, method: onKernelControllerArguments }
+#    App\EventListener\MessageArgumentListener:
+#        class: App\EventListener\MessageArgumentListener
+#        tags:
+#            - { name: kernel.event_listener, event: kernel.controller_arguments, method: onKernelControllerArguments }
 
 
 #    app.service_locator:

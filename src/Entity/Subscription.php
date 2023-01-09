@@ -35,6 +35,16 @@ class Subscription
     }
 
 
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+
+
     public function getAuthor(): User
     {
         return $this->author;

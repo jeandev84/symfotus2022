@@ -6,9 +6,11 @@ use App\Manager\UserManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Twig\Environment;
 
 
 #[Route(path: '/api/v2/user')]
@@ -17,11 +19,30 @@ class UserController extends AbstractController
 
     private UserManager $userManager;
 
+    private Environment $twig;
 
-    public function __construct(UserManager $userManager)
+
+    public function __construct(UserManager $userManager, Environment $twig)
     {
-        $this->userManager = $userManager;
+         $this->userManager = $userManager;
+         $this->twig        = $twig;
     }
+
+
+
+    #[Route(path: '/form', methods: ['GET'])]
+    public function getSaveFormAction(): Response
+    {
+         // api/v2/user/form
+         $form = $this->userManager->getSaveForm();
+         $content = $this->twig->render('users/form.twig', [
+             'userForm' => $form->createView()
+         ]);
+
+         return new Response($content);
+    }
+
+
 
 
 
