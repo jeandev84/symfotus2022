@@ -20,7 +20,7 @@ class AppEventSubscriber implements EventSubscriberInterface
 
     public function onAppEvent(AppEvent $event)
     {
-          dd($event->getMessage());
+          dump($event->getMessage());
     }
 
 
@@ -28,6 +28,7 @@ class AppEventSubscriber implements EventSubscriberInterface
 
     public function onAppEventHigh(AppEvent $event)
     {
-        dd(strtoupper($event->getMessage()));
+        dump(strtoupper($event->getMessage()));
+        $event->stopPropagation();
     }
 }
