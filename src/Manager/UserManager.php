@@ -44,11 +44,14 @@ class UserManager
     {
         /** @var UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
+
         /** @var User $user */
         $user = $userRepository->find($userId);
+
         if ($user === null) {
             return null;
         }
+
         $user->setLogin($login);
         $this->entityManager->flush();
 
@@ -62,7 +65,7 @@ class UserManager
      * @param int $userId
      * @return bool
     */
-    public function deleteUser(int $userId): bool
+    public function deleteUserById(int $userId): bool
     {
         /** @var UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
@@ -75,26 +78,23 @@ class UserManager
         }
 
 
-       $this->entityManager->remove($user);
-       $this->entityManager->flush();
-
-       return true;
+        return $this->deleteUser($user);
     }
 
 
 
 
-//    /**
-//     * @param User $user
-//     * @return bool
-//    */
-//    public function deleteUser(User $user): bool
-//    {
-//        $this->entityManager->remove($user);
-//        $this->entityManager->flush();
-//
-//        return true;
-//    }
+    /**
+     * @param User $user
+     * @return bool
+    */
+    public function deleteUser(User $user): bool
+    {
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+
+        return true;
+    }
 
 
 

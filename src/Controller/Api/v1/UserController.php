@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Api\v1;
 
+use App\Entity\User;
 use App\Manager\UserManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -45,7 +46,11 @@ class UserController extends AbstractController
          $users = $this->userManager->getUsers($page ?? 0, $perPage ?? 20);
          $code = empty($users) ? 204 : 200;
 
-         return new JsonResponse(['users' => $users], $code);
+         return new JsonResponse([
+             'users' => array_map(static fn(User $user) => $user->toArray(), $users)
+         ],
+             $code
+         );
      }
 
 
@@ -55,7 +60,7 @@ class UserController extends AbstractController
      #[Route(path: '/{id}', requirements: ['id' => '\d+'], methods: ['DELETE'])]
      public function deleteUserAction(int $id): JsonResponse
      {
-          $result = $this->userManager->deleteUser($id);
+          $result = $this->userManager->deleteUserById($id);
 
           return new JsonResponse(['success' => $result], $result ? 200 : 404);
      }
@@ -66,8 +71,8 @@ class UserController extends AbstractController
      #[Route(path: '', methods: ['PATCH'])]
      public function updateUserAction(Request $request): JsonResponse
      {
-         $userId = $request->request->get('userId');
-         $login  = $request->request->get('login');
+         $userId = $request->query->get('userId');
+         $login  = $request->query->get('login');
 
          $result = $this->userManager->updateUser($userId, $login);
 
