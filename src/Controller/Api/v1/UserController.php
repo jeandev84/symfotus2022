@@ -68,17 +68,6 @@ class UserController extends AbstractController
 
 
 
-     #[Route(path: '/{id}', requirements: ['id' => '\d+'], methods: ['DELETE'])]
-     public function deleteUserAction(int $id): JsonResponse
-     {
-          $result = $this->userManager->deleteUserById($id);
-
-          return new JsonResponse(['success' => $result], $result ? 200 : 404);
-     }
-
-
-
-
      #[Route(path: '', methods: ['PATCH'])]
      public function updateUserAction(Request $request): JsonResponse
      {
@@ -86,10 +75,20 @@ class UserController extends AbstractController
          $login  = $request->query->get('login');
 
          $result = $this->userManager->updateUser($userId, $login);
-         $code   = $result ? 200 : 404;
 
-         return new JsonResponse(['success' => $result->toArray()], $code);
+         return new JsonResponse(['success' => $result !== null], (! $request !== null) ? 200 : 404);
      }
+
+
+
+
+    #[Route(path: '/{id}', requirements: ['id' => '\d+'], methods: ['DELETE'])]
+    public function deleteUserByIdAction(int $id): JsonResponse
+    {
+        $result = $this->userManager->deleteUserById($id);
+
+        return new JsonResponse(['success' => $result], $result ? 200 : 404);
+    }
 
 
 
