@@ -6,6 +6,7 @@ use App\DTO\SaveUserDTO;
 use App\Entity\User;
 use App\Manager\UserManager;
 //use App\Security\Voter\UserVoter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
