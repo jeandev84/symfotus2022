@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Api\v2;
 
+use App\DTO\SaveUserDTO;
 use App\Entity\User;
 use App\Manager\UserManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,6 +41,77 @@ class UserController extends AbstractController
          ]);
 
          return new Response($content);
+    }
+
+
+
+
+    #[Route(path: '/form', methods: ['POST'])]
+    public function saveUserFormAction(Request $request): Response
+    {
+         $form = $this->userManager->getSaveForm();
+
+         $form->handleRequest($request);
+
+         if ($form->isSubmitted() && $form->isValid()) {
+
+              $userId = $this->userManager->saveUserFromDTO(new User(), new SaveUserDTO($form->getData()));
+              [$data, $code] = ($userId === null) ? [['success' => false], 400] : [['id' => $userId], 200];
+
+              return new JsonResponse($data, $code);
+         }
+
+         $content = $this->twig->render('users/form.twig', [
+             'userForm' => $form->createView()
+         ]);
+
+         return new Response($content);
+    }
+
+
+
+    #[Route(path: '/form/{id}', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function getUpdateFormAction(int $id): Response
+    {
+          $form = $this->userManager->getUpdateForm($id);
+
+          if ($form === null) {
+               return new JsonResponse(['message' => "User with ID {$id} not found"], 404);
+          }
+
+          $content = $this->twig->render('users/form.twig', [
+              'form' => $form->createView()
+          ]);
+
+          return new Response($content);
+    }
+
+
+
+
+    #[Route(path: '/form/{id}', requirements: ['id' => '\d+'], methods: ['PATCH'])]
+    public function updateUserFormAction(Request $request, int $id)
+    {
+          $form = $this->userManager->getUpdateForm($id);
+
+          if ($form === null) {
+              return new JsonResponse(['message' => "User with ID {$id} not found"], 404);
+          }
+
+          $form->handleRequest($request);
+
+          if ($form->isSubmitted() && $form->isValid()) {
+
+              $result = $this->userManager->updateUserFromDTO($id, $form->getData());
+
+              return new JsonResponse(['success' => $result], $result ? 200 : 400);
+          }
+
+          $content = $this->twig->render('users/form.twig', [
+             'form' => $form->createView()
+          ]);
+
+          return new Response($content);
     }
 
 
