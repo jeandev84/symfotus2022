@@ -2,9 +2,11 @@
 namespace App\Controller\Api\v1;
 
 use App\Entity\User;
+use App\Event\CreateUserEvent;
 use App\Exception\DeprecatedApiException;
 use App\Manager\UserManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +20,16 @@ class UserController extends AbstractController
 
      private UserManager $userManager;
 
+     private EventDispatcherInterface $eventDispatcher;
 
-     public function __construct(UserManager $userManager)
+
+     public function __construct(
+         UserManager $userManager,
+         EventDispatcherInterface $eventDispatcher
+     )
      {
           $this->userManager = $userManager;
+          $this->eventDispatcher = $eventDispatcher;
      }
 
 
@@ -81,5 +89,20 @@ class UserController extends AbstractController
          $code   = $result ? 200 : 404;
 
          return new JsonResponse(['success' => $result->toArray()], $code);
+     }
+
+
+
+
+
+     #[Route(path: '/async', methods: ['POST'])]
+     public function saveUserAsyncAction(Request $request)
+     {
+          /*  $this->eventDispatcher->dispatch(new CreateUserEvent($request->request->get('login'))); */
+
+          $login = $request->request->get('login') . '_updated';
+          $this->eventDispatcher->dispatch(new CreateUserEvent($login));
+
+          return new JsonResponse(['success' => true], Response::HTTP_ACCEPTED);
      }
 }
