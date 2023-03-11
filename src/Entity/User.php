@@ -13,7 +13,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use JsonException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-
+use JMS\Serializer\Annotation as JMS;
 
 
 #[ORM\Table(name: '`user`')]
@@ -25,9 +25,11 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
     #[ORM\Column(name: 'id', type: 'bigint', unique:true)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[JMS\Groups(['user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 32, unique: true, nullable: false)]
+    #[JMS\Groups(['user:write'])]
     private string $login;
 
     #[ORM\Column(name: 'created_at', type: 'datetime', nullable: false)]
@@ -58,14 +60,19 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
 
 
     #[ORM\Column(type: 'string', length: 120, nullable: false)]
+    #[JMS\Exclude]
     private string $password;
 
 
     #[ORM\Column(type: 'integer', nullable: false)]
+    #[JMS\Type('string')]
+    #[JMS\Groups(['user:write'])]
     private int $age;
 
 
     #[ORM\Column(type: 'boolean', nullable: false)]
+    #[JMS\Type('int')]
+    #[JMS\Groups(['user:write'])]
     private bool $isActive;
 
 

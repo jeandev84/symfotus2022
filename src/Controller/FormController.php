@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Api\v1;
+namespace App\Controller;
 
 use App\DTO\SaveUserDTO;
 use App\Entity\User;
