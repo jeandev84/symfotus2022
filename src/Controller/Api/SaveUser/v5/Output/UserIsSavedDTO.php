@@ -2,7 +2,10 @@
 namespace App\Controller\Api\SaveUser\v5\Output;
 
 use App\Entity\Traits\SafeLoadFieldsTrait;
+use JMS\Serializer\Annotation as JMS;
 
+
+# класс представления, то что мы получаем на выход после сохранения пользователя
 class UserIsSavedDTO
 {
     use SafeLoadFieldsTrait;
@@ -14,6 +17,8 @@ class UserIsSavedDTO
 
     public int $age;
 
+
+    #[JMS\SerializedName('isActive')]
     public bool $isActive;
 
 

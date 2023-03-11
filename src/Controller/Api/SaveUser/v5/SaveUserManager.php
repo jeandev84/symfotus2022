@@ -32,7 +32,7 @@ class SaveUserManager
     {
         $user = new User();
         $user->setLogin($saveUserDTO->login);
-        $user->setPassword($saveUserDTO->password);
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, $saveUserDTO->password));
         $user->setRoles($saveUserDTO->roles);
         $user->setAge($saveUserDTO->age);
         $user->setIsActive($saveUserDTO->isActive);
