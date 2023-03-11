@@ -81,6 +81,11 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
     private string $roles = '{}';
 
 
+
+    #[ORM\Column(type: 'string', length: 32, unique: true, nullable: true)]
+    private string $token;
+
+
     public function __construct()
     {
         $this->tweets = new ArrayCollection();
@@ -344,5 +349,29 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
     public function getUserIdentifier(): string
     {
          return $this->login;
+    }
+
+
+
+
+    /**
+     * @return string
+    */
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+
+
+    /**
+     * @param string $token
+     * @return User
+    */
+    public function setToken(string $token): static
+    {
+        $this->token = $token;
+
+        return $this;
     }
 }

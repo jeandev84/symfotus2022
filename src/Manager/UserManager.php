@@ -275,12 +275,41 @@ class UserManager
     {
         /** @var UserRepository $userRepository */
         $userRepository = $this->entityManager->getRepository(User::class);
-        /** @var User|null $user */
+
+        return $userRepository->findOneBy(['login' => $login]);
+    }
+
+
+
+
+
+    public function updateUserToken(string $login): ?string
+    {
+         $user = $this->findUserByLogin($login);
+
+         if ($user === null) {
+              return false;
+         }
+
+         $token = base64_encode(random_bytes(20));
+         $user->setToken($token);
+
+         $this->entityManager->flush();
+
+         return $token;
+    }
+
+
+/*
+    public function findUserByLogin(string $login): ?User
+    {
+        /** @var UserRepository $userRepository *//*
+        $userRepository = $this->entityManager->getRepository(User::class);
+        /** @var User|null $user *//*
         $user = $userRepository->findOneBy(['login' => $login]);
 
         return $user;
     }
-
 
 
     public function clearEntityManager(): void
@@ -289,10 +318,6 @@ class UserManager
     }
 
 
-    /**
-     * @param string $login
-     * @return User
-     */
     public function create(string $login): User
     {
         $user = new User();
@@ -321,24 +346,18 @@ class UserManager
 
 
 
-
-    /**
-     * @return User[]
-     */
     public function findUsersByLogin(string $name): array
     {
         return $this->entityManager->getRepository(User::class)->findBy(['login' => $name]);
     }
 
-    /**
-     * @return User[]
-     */
+
     public function findUsersByCriteria(string $login): array
     {
         $criteria = Criteria::create();
-        /** @noinspection NullPointerExceptionInspection */
+        /** @noinspection NullPointerExceptionInspection *//*
         $criteria->andWhere(Criteria::expr()->eq('login', $login));
-        /** @var EntityRepository $repository */
+        /** @var EntityRepository $repository *//*
         $repository = $this->entityManager->getRepository(User::class);
 
         return $repository->matching($criteria)->toArray();
@@ -346,13 +365,6 @@ class UserManager
 
 
 
-
-
-    /**
-     * @param int $userId
-     * @param string $login
-     * @return User|null
-     */
     public function updateUserLogin(int $userId, string $login): ?User
     {
         $user = $this->findUser($userId);
@@ -366,7 +378,6 @@ class UserManager
 
         return $user;
     }
-
 
 
 
@@ -447,4 +458,6 @@ class UserManager
         return $queryBuilder->executeQuery()->fetchAllNumeric();
 
     }
+*/
+
 }
