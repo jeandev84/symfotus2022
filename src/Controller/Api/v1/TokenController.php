@@ -38,7 +38,7 @@ class TokenController extends AbstractController
               return new JsonResponse(['message' => 'Authorization required'], Response::HTTP_UNAUTHORIZED);
           }
 
-          if (! $this->authService->attempt($user, $password)) {
+          if (! $this->authService->isCredentialsValid($user, $password)) {
                return new JsonResponse(['message' => 'Invalid password or username'], Response::HTTP_FORBIDDEN);
           }
 

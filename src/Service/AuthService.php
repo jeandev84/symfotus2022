@@ -21,22 +21,22 @@ class AuthService
 
 
 
-//
-//     /**
-//      * @param string $login
-//      * @param string $password
-//      * @return bool
-//     */
-//     public function isCredentialsValid(string $login, string $password): bool
-//     {
-//          $user = $this->userManager->findUserByLogin($login);
-//
-//          if ($user === null) {
-//              return false;
-//          }
-//
-//          return $this->passwordHasher->isPasswordValid($user, $password);
-//     }
+
+     /**
+      * @param string $login
+      * @param string $password
+      * @return bool
+     */
+     public function isCredentialsValid(string $login, string $password): bool
+     {
+          $user = $this->userManager->findUserByLogin($login);
+
+          if ($user === null) {
+              return false;
+          }
+
+          return $this->passwordHasher->isPasswordValid($user, $password);
+     }
 
 
 
@@ -48,13 +48,7 @@ class AuthService
      */
      public function attempt(string $login, string $password): bool
      {
-         $user = $this->userManager->findUserByLogin($login);
-
-         if ($user === null) {
-             return false;
-         }
-
-         return $this->passwordHasher->isPasswordValid($user, $password);
+         return $this->isCredentialsValid($login, $password);
      }
 
 
