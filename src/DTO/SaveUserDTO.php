@@ -18,6 +18,8 @@ class SaveUserDTO
 
 
       #[Assert\NotBlank]
+      #[Assert\Type('integer')]
+      #[Assert\GreaterThan("18")]
       public int $age;
 
 
