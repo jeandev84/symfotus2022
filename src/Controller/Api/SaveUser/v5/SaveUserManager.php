@@ -2,7 +2,7 @@
 namespace App\Controller\Api\SaveUser\v5;
 
 use App\Controller\Api\SaveUser\v5\Output\UserIsSavedDTO;
-use App\DTO\SaveUserDTO;
+use App\Controller\Api\SaveUser\v5\Input\SaveUserDTO;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializationContext;

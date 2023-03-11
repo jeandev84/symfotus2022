@@ -29,6 +29,7 @@ class MainParamConvertor implements ParamConverterInterface
      */
     public function apply(Request $httpRequest, ParamConverter $configuration): bool
     {
+         // validationErrors ( это название параметра в saveUserAction() )
          $class = $configuration->getClass();
          /** @var SafeLoadFieldsTrait $request */
          $request = new $class();
@@ -52,12 +53,12 @@ class MainParamConvertor implements ParamConverterInterface
 
 
     /**
-     * @param Request $request
+     * @param $request
      * @param Request $httpRequest
      * @param ParamConverter $configuration
      * @return ConstraintViolationListInterface
-    */
-    public function validate(Request $request, Request $httpRequest, ParamConverter $configuration): ConstraintViolationListInterface
+     */
+    public function validate($request, Request $httpRequest, ParamConverter $configuration): ConstraintViolationListInterface
     {
          $httpRequest->attributes->set($configuration->getName(), $request);
          $options = (array)$configuration->getOptions();
