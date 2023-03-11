@@ -36,10 +36,10 @@ class Controller extends AbstractFOSRestController
 
 
     #[Rest\Post(path: '/api/v5/save-user')]
-    public function saveUserAction(SaveUserDTO $request, ConstraintViolationListInterface $violationErrors): Response
+    public function saveUserAction(SaveUserDTO $request, ConstraintViolationListInterface $validationErrors): Response
     {
-         if ($violationErrors->count()) {
-             $view = $this->createValidationErrorResponse(Response::HTTP_BAD_REQUEST, $violationErrors);
+         if ($validationErrors->count()) {
+             $view = $this->createValidationErrorResponse(Response::HTTP_BAD_REQUEST, $validationErrors);
              return $this->handleView($view);
          }
 
