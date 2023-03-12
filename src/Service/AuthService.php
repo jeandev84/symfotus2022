@@ -39,19 +39,27 @@ class AuthService
      }
 
 
-
-
-
      /**
       * @param string $login
       * @return string|null
       * @throws JWTEncodeFailureException
+      * @throws \JsonException
      */
      public function getToken(string $login): ?string
      {
          // Token data
-         $tokenData = ['username' => $login, 'exp' => time() + $this->tokenTTL];
+         // iat : date creation
+         // exp : date expiration
 
-         return $this->jwtEncoder->encode($tokenData);
+         $user = $this->userManager->findUserByLogin($login);
+         $roles = $user ? $user->getRoles() : [];
+
+         $payload = [
+             'username' => $login,
+             'roles'    => $roles,
+             'exp'      => time() + $this->tokenTTL,
+         ];
+
+         return $this->jwtEncoder->encode($payload);
      }
 }

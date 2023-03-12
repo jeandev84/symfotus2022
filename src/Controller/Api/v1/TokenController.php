@@ -3,6 +3,7 @@ namespace App\Controller\Api\v1;
 
 
 use App\Service\AuthService;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +28,9 @@ class TokenController extends AbstractController
       }
 
 
-
+      /**
+       * @throws JWTEncodeFailureException
+      */
       #[Route(path: '', methods: ['POST'])]
       public function getTokenAction(Request $request): Response
       {
