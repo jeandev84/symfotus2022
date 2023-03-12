@@ -2,21 +2,21 @@
 namespace App\Service;
 
 use App\Manager\UserManager;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AuthService
 {
 
-     private UserManager $userManager;
-
-
-     private UserPasswordHasherInterface $passwordHasher;
-
-
-     public function __construct(UserManager $userManager, UserPasswordHasherInterface $passwordHasher)
+     public function __construct(
+         protected UserManager $userManager,
+         protected UserPasswordHasherInterface $passwordHasher,
+         protected JWTEncoderInterface $jwtEncoder,
+         protected int $tokenTTL
+     )
      {
-         $this->userManager = $userManager;
-         $this->passwordHasher = $passwordHasher;
+
      }
 
 
@@ -27,7 +27,7 @@ class AuthService
       * @param string $password
       * @return bool
      */
-     public function isCredentialsValid(string $login, string $password): bool
+     public function attempt(string $login, string $password): bool
      {
           $user = $this->userManager->findUserByLogin($login);
 
@@ -41,26 +41,17 @@ class AuthService
 
 
 
-     /**
-      * @param string $login
-      * @param string $password
-      * @return bool
-     */
-     public function attempt(string $login, string $password): bool
-     {
-         return $this->isCredentialsValid($login, $password);
-     }
-
-
-
-
 
      /**
       * @param string $login
-      * @return string
+      * @return string|null
+      * @throws JWTEncodeFailureException
      */
-     public function getToken(string $login): string
+     public function getToken(string $login): ?string
      {
-         return $this->userManager->updateUserToken($login);
+         // Token data
+         $tokenData = ['username' => $login, 'exp' => time() + $this->tokenTTL];
+
+         return $this->jwtEncoder->encode($tokenData);
      }
 }

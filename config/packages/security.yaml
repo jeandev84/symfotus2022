@@ -16,7 +16,10 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            custom_authenticator: App\Security\Authenticator\LoginAuthenticator
+            stateless: true
+            # custom_authenticator: App\Security\Authenticator\LoginAuthenticator
+            # custom_authenticator: App\Security\Authenticator\ApiTokenAuthenticator
+            custom_authenticator: App\Security\Authenticator\JWTTokenAuthenticator
         token:
             pattern: ^/api/v1/token
             security: false
