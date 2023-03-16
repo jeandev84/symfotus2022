@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Api\SaveUser\v5;
 
+use App\Client\StatsdAPIClient;
 use App\Controller\Api\SaveUser\v5\Output\UserIsSavedDTO;
 use App\Controller\Api\SaveUser\v5\Input\SaveUserDTO;
 use App\Entity\User;
@@ -18,7 +19,8 @@ class SaveUserManager
         private EntityManagerInterface $entityManager,
         private SerializerInterface $serializer,
         private UserPasswordHasherInterface $userPasswordHasher,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private StatsdAPIClient $statsdAPIClient
     )
     {
 
@@ -32,6 +34,11 @@ class SaveUserManager
     */
     public function saveUser(SaveUserDTO $saveUserDTO): UserIsSavedDTO
     {
+
+        // Graphite client
+        $this->statsdAPIClient->increment('save_user_v5_attempt');
+
+        // Monolog
         $this->log();
 
         $user = new User();

@@ -98,7 +98,7 @@ services:
      container_name: 'graphite'
      restart: always
      ports:
-       - 8000:80
+       - 8080:80
        - 2003:2003
        - 2004:2004
        - 2023:2023
