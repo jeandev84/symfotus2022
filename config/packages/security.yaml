@@ -19,13 +19,13 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            stateless: true
-            #custom_authenticator: App\Security\Authenticator\LoginAuthenticator
+            #stateless: true
+            security: false
+            custom_authenticator: App\Security\Authenticator\LoginAuthenticator
             #custom_authenticator: App\Security\Authenticator\ApiTokenAuthenticator
-            custom_authenticator:
-               - App\Security\Authenticator\JwtTokenAuthenticator
-            logout:
-               path: app_logout
+            #custom_authenticator: App\Security\Authenticator\JwtTokenAuthenticator
+            #logout:
+               #path: app_logout
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 

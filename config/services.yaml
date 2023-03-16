@@ -109,6 +109,13 @@ services:
             $tokenTTL: '%env(JWT_TTL_SEC)%'
 
 
+
+    # форматирование ошибок в монологе
+    monolog.formatter.app_formatter:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%level_name%%]: [%%datetime%%] %%message%%\n"
+
 #    App\EventListener\MessageArgumentListener:
 #        class: App\EventListener\MessageArgumentListener
 #        tags:
