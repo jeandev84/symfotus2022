@@ -113,6 +113,12 @@ services:
      ports:
        - 3000:3000
 
+   memcached:
+     image: memcached:latest
+     restart: always
+     ports:
+       - 12211:11211
+
 volumes:
   dump:
   postgresql:

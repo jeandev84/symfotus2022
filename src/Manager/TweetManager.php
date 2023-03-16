@@ -3,6 +3,7 @@ namespace App\Manager;
 
 use App\Entity\Tweet;
 use App\Entity\User;
+use App\Repository\TweetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TweetManager
@@ -24,5 +25,22 @@ class TweetManager
         $author->addTweet($tweet);
         $this->entityManager->persist($tweet);
         $this->entityManager->flush();
+    }
+
+
+
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @return Tweet[]
+    */
+    public function getTweets(int $page, int $perPage): array
+    {
+
+        /** @var TweetRepository $tweetRepository */
+        $tweetRepository = $this->entityManager->getRepository(Tweet::class);
+
+        return $tweetRepository->getTweets($page, $perPage);
     }
 }
