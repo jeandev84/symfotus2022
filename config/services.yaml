@@ -110,7 +110,7 @@ services:
 
 
 
-    # форматирование ошибок в монологе
+    # форматирование ошибок в monolog (./var/log/dev.log)
     monolog.formatter.app_formatter:
         class: Monolog\Formatter\LineFormatter
         arguments:
