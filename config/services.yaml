@@ -122,3 +122,16 @@ services:
             - graphite
             - 8125
             - my_app
+
+    # Memcached services bindings used inside (./config/packages/doctrine.yaml)
+    memcached.doctrine:
+        class: Memcached
+        factory: Symfony\Component\Cache\Adapter\MemcachedAdapter::createConnection
+        arguments:
+            - '%env(MEMCACHED_DSN)%'
+            - PREFIX_DEV: 'my_app_doctrine'
+
+    doctrine.cache.memcached:
+        class: Doctrine\Common\Cache\MemcachedCache
+        calls:
+            - ['setMemcached', ['@memcached.doctrine']]

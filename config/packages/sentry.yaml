@@ -5,17 +5,17 @@ when@prod:
             integrations:
                 - 'Sentry\Integration\IgnoreErrorsIntegration'
 
-services:
-    Sentry\Integration\IgnoreErrorsIntegration:
-        arguments:
-            $options:
-                ignore_exceptions:
-                    - Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+    services:
+        Sentry\Integration\IgnoreErrorsIntegration:
+            arguments:
+                $options:
+                    ignore_exceptions:
+                        - Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 
-    Sentry\Monolog\Handler:
-        arguments:
-            $hub: '@Sentry\State\HubInterface'
-            $level: !php/const Monolog\Logger::ERROR
+        Sentry\Monolog\Handler:
+            arguments:
+                $hub: '@Sentry\State\HubInterface'
+                $level: !php/const Monolog\Logger::ERROR
 
 
 #        If you are using Monolog, you also need this additional configuration to log the errors correctly:
