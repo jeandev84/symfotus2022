@@ -103,7 +103,7 @@ services:
             - { name: kernel.event_listener, event: kernel.exception }
 
 
-
+    # Authentication service
     App\Service\AuthService:
         arguments:
             $tokenTTL: '%env(JWT_TTL_SEC)%'
@@ -135,3 +135,26 @@ services:
         class: Doctrine\Common\Cache\MemcachedCache
         calls:
             - ['setMemcached', ['@memcached.doctrine']]
+
+
+    # Redis
+    redis_client:
+        class: Redis
+        factory: Symfony\Component\Cache\Adapter\RedisAdapter::createConnection
+        arguments:
+            - '%env(REDIS_DSN)%'
+
+    redis_adapter:
+        class: Symfony\Component\Cache\Adapter\RedisAdapter
+        arguments:
+            - '@redis_client'
+            - 'my_app'
+
+    redis_adapter_decorated:
+        class: App\Symfony\Decorator\CountingAdapterDecorator
+        arguments:
+            - '@redis_adapter'
+
+    App\Manager\TweetManager:
+        arguments:
+            $cacheItemPool: '@redis_adapter_decorated'

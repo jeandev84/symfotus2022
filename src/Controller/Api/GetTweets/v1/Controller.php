@@ -25,7 +25,8 @@ class Controller extends AbstractFOSRestController
          $page    = $request->query->getInt('page', 20);
          $tweets  = $this->tweetManager->getTweets($page, $perPage);
          $code    = empty($tweets) ? 204 : 200;
-         $view    = $this->view(['tweets' => array_map(static fn(Tweet $tweet) => $tweet->toArray(), $tweets)], $code);
+         /* $view    = $this->view(['tweets' => array_map(static fn(Tweet $tweet) => $tweet->toArray(), $tweets)], $code); */
+         $view    = $this->view(['tweets' => $tweets], $code);
 
          return $this->handleView($view);
      }

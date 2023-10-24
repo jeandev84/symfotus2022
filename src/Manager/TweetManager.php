@@ -5,14 +5,14 @@ use App\Entity\Tweet;
 use App\Entity\User;
 use App\Repository\TweetRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\Cache\InvalidArgumentException;
 
 class TweetManager
 {
-    private EntityManagerInterface $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(protected EntityManagerInterface $entityManager, protected CacheItemPoolInterface $cacheItemPool)
     {
-        $this->entityManager = $entityManager;
     }
 
     public function postTweet(User $author, string $text): void
@@ -28,12 +28,11 @@ class TweetManager
     }
 
 
-
-
     /**
      * @param int $page
      * @param int $perPage
      * @return Tweet[]
+     * @throws InvalidArgumentException
     */
     public function getTweets(int $page, int $perPage): array
     {
@@ -41,6 +40,14 @@ class TweetManager
         /** @var TweetRepository $tweetRepository */
         $tweetRepository = $this->entityManager->getRepository(Tweet::class);
 
-        return $tweetRepository->getTweets($page, $perPage);
+        $tweetsItem = $this->cacheItemPool->getItem("tweets_{$page}_{$perPage}");
+
+        if (! $tweetsItem->isHit()) {
+            $tweets = $tweetRepository->getTweets($page, $perPage);
+            $tweetsItem->set(array_map(static fn(Tweet $tweet) => $tweet->toArray(), $tweets));
+            $this->cacheItemPool->save($tweetsItem);
+        }
+
+        return $tweetsItem->get();
     }
 }
