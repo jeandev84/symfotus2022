@@ -311,10 +311,32 @@ class UserManager
     }
 
 
-/*
-    public function findUserByLogin(string $login): ?User
+
+    public function create(string $login): User
     {
-        /** @var UserRepository $userRepository *//*
+        $user = new User();
+        $user->setLogin($login);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $user;
+    }
+
+
+
+    public function subscribeUser(User $author, User $follower): void
+    {
+        $author->addFollower($follower);
+        $follower->addAuthor($author);
+        $this->entityManager->flush();
+    }
+
+
+
+    /*
+        public function findUserByLogin(string $login): ?User
+        {
+            /** @var UserRepository $userRepository *//*
         $userRepository = $this->entityManager->getRepository(User::class);
         /** @var User|null $user *//*
         $user = $userRepository->findOneBy(['login' => $login]);
@@ -329,16 +351,6 @@ class UserManager
     }
 
 
-    public function create(string $login): User
-    {
-        $user = new User();
-        $user->setLogin($login);
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        return $user;
-    }
-
     public function findUser(int $id): ?User
     {
         $repository = $this->entityManager->getRepository(User::class);
@@ -346,14 +358,6 @@ class UserManager
 
         return $user instanceof User ? $user : null;
     }
-
-    public function subscribeUser(User $author, User $follower): void
-    {
-        $author->addFollower($follower);
-        $follower->addAuthor($author);
-        $this->entityManager->flush();
-    }
-
 
 
 
