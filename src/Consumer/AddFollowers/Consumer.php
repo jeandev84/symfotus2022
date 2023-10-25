@@ -35,14 +35,18 @@ class Consumer implements ConsumerInterface
             return $this->reject($e->getMessage());
         }
 
-
-        /*
         try {
             $userRepository = $this->entityManager->getRepository(User::class);
             $user = $userRepository->find($message->getUserId());
             if (!($user instanceof User)) {
                 return $this->reject(sprintf('User ID %s was not found', $message->getUserId()));
             }
+
+            /*
+            if ($message->getCount() === 5) {
+                sleep(1000);
+            }
+            */
 
             $this->subscriptionService->addFollowers($user, $message->getFollowerLogin(), $message->getCount());
         } catch (Throwable $e) {
@@ -51,18 +55,6 @@ class Consumer implements ConsumerInterface
             $this->entityManager->clear();
             $this->entityManager->getConnection()->close();
         }
-        */
-
-        $userRepository = $this->entityManager->getRepository(User::class);
-        $user = $userRepository->find($message->getUserId());
-        if (!($user instanceof User)) {
-            return $this->reject(sprintf('User ID %s was not found', $message->getUserId()));
-        }
-
-        $this->subscriptionService->addFollowers($user, $message->getFollowerLogin(), $message->getCount());
-
-        $this->entityManager->clear();
-        $this->entityManager->getConnection()->close();
 
         return self::MSG_ACK;
     }
