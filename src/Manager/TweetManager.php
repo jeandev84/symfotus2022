@@ -11,7 +11,10 @@ use Psr\Cache\InvalidArgumentException;
 class TweetManager
 {
 
-    public function __construct(protected EntityManagerInterface $entityManager, protected CacheItemPoolInterface $cacheItemPool)
+    public function __construct(
+        protected EntityManagerInterface $entityManager,
+        protected CacheItemPoolInterface $cacheItemPool
+    )
     {
     }
 
