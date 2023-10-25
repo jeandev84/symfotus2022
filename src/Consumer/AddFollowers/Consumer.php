@@ -46,9 +46,15 @@ class Consumer implements ConsumerInterface
             if ($message->getCount() === 5) {
                 sleep(1000);
             }
+
+            if ($message->getFollowerLogin() === 'multi_follower_error #11') {
+                throw new Exception('Planed error');
+            }
             */
 
             $this->subscriptionService->addFollowers($user, $message->getFollowerLogin(), $message->getCount());
+            sleep(1);
+
         } catch (Throwable $e) {
             return $this->reject($e->getMessage());
         } finally {

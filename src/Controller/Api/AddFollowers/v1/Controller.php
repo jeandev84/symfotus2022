@@ -47,8 +47,9 @@ class Controller extends AbstractFOSRestController
                  $createdFollowers = $this->subscriptionService->addFollowers($user, $followersLogin, $count);
                  $view = $this->view(['created' => $createdFollowers], 200);
              } else {
-                 $message = (new AddFollowersDTO($userId, $followersLogin, $count))->toAMQPMessage();
-                 $result  = $this->asyncService->publishToExchange(AsyncService::ADD_FOLLOWER, $message);
+                 // send multi messages
+                 $messages = $this->subscriptionService->getFollowersMessages($user, $followersLogin, $count);
+                 $result  = $this->asyncService->publishMultipleToExchange(AsyncService::ADD_FOLLOWER, $messages);
                  $view = $this->view(['success' => $result], $result ? 200 : 500);
              }
          } else {
@@ -63,16 +64,45 @@ class Controller extends AbstractFOSRestController
 
 
 
-    #[Rest\Post(path: '/api/v1/add-followers-old')]
+    #[Rest\Post(path: '/api/v1/add-followers-simple')]
     #[RequestParam(name: 'userId', requirements: '\d+')]
     #[RequestParam(name: 'followersLogin')]
     #[RequestParam(name: 'count', requirements: '\d+')]
-    public function addFollowersActionOLD(int $userId, string $followersLogin, int $count): Response
+    public function addFollowersActionSimple(int $userId, string $followersLogin, int $count): Response
     {
         $user = $this->userManager->findUserById($userId);
         if ($user !== null) {
             $createdFollowers = $this->subscriptionService->addFollowers($user, $followersLogin, $count);
             $view = $this->view(['created' => $createdFollowers], 200);
+        } else {
+            $view = $this->view(['success' => false], 404);
+        }
+
+        return $this->handleView($view);
+    }
+
+
+
+
+
+    #[Rest\Post(path: '/api/v1/add-followers-async-push-one-message')]
+    #[RequestParam(name: 'userId', requirements: '\d+')]
+    #[RequestParam(name: 'followersLogin')]
+    #[RequestParam(name: 'count', requirements: '\d+')]
+    #[RequestParam(name: 'async', requirements: '0|1')]
+    public function addFollowersActionAsync(int $userId, string $followersLogin, int $count, int $async): Response
+    {
+        $user = $this->userManager->findUserById($userId);
+        if ($user !== null) {
+            if ($async === 0) {
+                $createdFollowers = $this->subscriptionService->addFollowers($user, $followersLogin, $count);
+                $view = $this->view(['created' => $createdFollowers], 200);
+            } else {
+                // Send one message
+                $message = (new AddFollowersDTO($userId, $followersLogin, $count))->toAMQPMessage();
+                $result  = $this->asyncService->publishToExchange(AsyncService::ADD_FOLLOWER, $message);
+                $view = $this->view(['success' => $result], $result ? 200 : 500);
+            }
         } else {
             $view = $this->view(['success' => false], 404);
         }

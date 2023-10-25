@@ -25,6 +25,16 @@ class AsyncService
         $this->producers[$producerName] = $producer;
     }
 
+
+    /**
+     * Push one message
+     *
+     * @param string $producerName
+     * @param string $message
+     * @param string|null $routingKey
+     * @param array|null $additionalProperties
+     * @return bool
+    */
     public function publishToExchange(string $producerName, string $message, ?string $routingKey = null, ?array $additionalProperties = null): bool
     {
         if (isset($this->producers[$producerName])) {
@@ -35,6 +45,18 @@ class AsyncService
         return false;
     }
 
+
+
+
+    /**
+     * Push multiple messages
+     *
+     * @param string $producerName
+     * @param array $messages
+     * @param string|null $routingKey
+     * @param array|null $additionalProperties
+     * @return int
+    */
     public function publishMultipleToExchange(string $producerName, array $messages, ?string $routingKey = null, ?array $additionalProperties = null): int
     {
         $sentCount = 0;
