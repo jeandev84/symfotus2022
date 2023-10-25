@@ -37,7 +37,7 @@ doctrine:
 #    doctrine.cache.memcached:
 #        class: Doctrine\Common\Cache\MemcachedCache
 #        calls:
-#            - ['setMemcached', ['@memcached.doctrine']]
+#            - [ 'setMemcached', [ '@memcached.doctrine' ]]
 
 when@test:
     doctrine:
