@@ -121,6 +121,18 @@ services:
      ports:
        - 13211:11211
 
+   rabbitmq:
+     image: rabbitmq:3.7.5-management
+     working_dir: /app
+     hostname: rabbit-mq
+     container_name: 'rabbit-mq'
+     ports:
+       - 15673:15672
+       - 5673:5672
+     environment:
+       RABBITMQ_DEFAULT_USER: user
+       RABBITMQ_DEFAULT_PASS: password
+
 volumes:
   dump:
   postgresql:

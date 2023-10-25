@@ -145,3 +145,10 @@ services:
     App\Manager\TweetManager:
         arguments:
             $cache: '@redis_adapter'
+
+
+    App\Service\AsyncService:
+        calls:
+            - [ 'registerProducer', [ !php/const App\Service\AsyncService::ADD_FOLLOWER, '@old_sound_rabbit_mq.add_followers_producer' ] ]
+            #- [ 'registerProducer', [ !php/const App\Service\AsyncService::PUBLISH_TWEET, '@old_sound_rabbit_mq.publish_tweet_producer' ] ]
+            #- [ 'registerProducer', [ !php/const App\Service\AsyncService::UPDATE_FEED, '@old_sound_rabbit_mq.update_feed_producer' ] ]

@@ -34,6 +34,20 @@ class UserManager
 
 
 
+
+    /**
+     * @param int $id
+     *
+     * @return User|null
+    */
+    public function getUserById(int $id): ?User
+    {
+         $repository = $this->entityManager->getRepository(User::class);
+
+         return $repository->find($id);
+    }
+
+
     public function getSaveForm(): FormInterface
     {
          return $this->formFactory->createBuilder()
