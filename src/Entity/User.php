@@ -291,7 +291,7 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
     /**
      * @return bool
      */
-    public function getIsActive(): bool
+    public function IsActive(): bool
     {
         return $this->isActive;
     }

@@ -1,26 +1,28 @@
 <?php
+namespace App\Consumer\SendEmailNotification;
 
-namespace App\Consumer\AddFollowers;
-
-use App\Consumer\AddFollowers\Input\Message;
+use App\Consumer\SendEmailNotification\Input\Message;
 use App\Entity\User;
-use App\Service\SubscriptionService;
+use App\Manager\EmailNotificationManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use JsonException;
 use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Throwable;
 
 class Consumer implements ConsumerInterface
 {
-    public function __construct(
-        private EntityManagerInterface $entityManager,
-        private ValidatorInterface $validator,
-        private SubscriptionService $subscriptionService
-    )
+    private EntityManagerInterface $entityManager;
+
+    private ValidatorInterface $validator;
+
+    private EmailNotificationManager $emailNotificationManager;
+
+    public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator, EmailNotificationManager $emailNotificationManager)
     {
+        $this->entityManager = $entityManager;
+        $this->validator = $validator;
+        $this->emailNotificationManager = $emailNotificationManager;
     }
 
     public function execute(AMQPMessage $msg): int
@@ -41,7 +43,10 @@ class Consumer implements ConsumerInterface
             return $this->reject(sprintf('User ID %s was not found', $message->getUserId()));
         }
 
-        $this->subscriptionService->addFollowers($user, $message->getFollowerLogin(), $message->getCount());
+        $this->emailNotificationManager->saveEmailNotification($user->getEmail(), $message->getText());
+
+        $this->entityManager->clear();
+        $this->entityManager->getConnection()->close();
 
         return self::MSG_ACK;
     }

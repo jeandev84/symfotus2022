@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/api/v1/tweet')]
 class Controller extends AbstractFOSRestController
 {
 
@@ -18,7 +17,7 @@ class Controller extends AbstractFOSRestController
 
 
 
-     #[Route(path: '', methods: ['GET'])]
+     #[Route(path: '/api/v1/tweet', methods: ['GET'])]
      public function getTweetsAction(Request $request): Response
      {
          $perPage = $request->query->getInt('perPage');
