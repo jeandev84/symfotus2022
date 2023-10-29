@@ -3,4 +3,13 @@ fos_elastica:
     clients:
         default: { url: '%env(ELASTICSEARCH_URL)%' }
     indexes:
-        app: null
+        user:
+            persistence:
+                driver: orm
+                model: App\Entity\User
+            properties:
+                login: ~
+                age: ~
+                phone: ~
+                email: ~
+                preferred: ~

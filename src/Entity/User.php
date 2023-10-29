@@ -2,38 +2,34 @@
 
 namespace App\Entity;
 
+use App\Entity\Contract\HasMetaTimestampsInterface;
 use App\Repository\UserRepository;
 use DateTime;
-use App\Entity\Contract\HasMetaTimestampsInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
+use JMS\Serializer\Annotation as JMS;
 use JsonException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use JMS\Serializer\Annotation as JMS;
-
 
 #[ORM\Table(name: '`user`')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthenticatedUserInterface
 {
-
     public const EMAIL_NOTIFICATION = 'email';
-    public const SMS_NOTIFICATION   = 'sms';
-
+    public const SMS_NOTIFICATION = 'sms';
 
     #[ORM\Column(name: 'id', type: 'bigint', unique:true)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    #[JMS\Groups(['user:read'])]
+    #[JMS\Groups(['user2'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 32, unique: true, nullable: false)]
-    #[JMS\Groups(['user:write'])]
+    #[JMS\Groups(['user1', 'elastica'])]
     private string $login;
 
     #[ORM\Column(name: 'created_at', type: 'datetime', nullable: false)]
@@ -62,43 +58,39 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: 'Subscription')]
     private Collection $subscriptionFollowers;
 
-
     #[ORM\Column(type: 'string', length: 120, nullable: false)]
-    #[JMS\Exclude]
     private string $password;
-
 
     #[ORM\Column(type: 'integer', nullable: false)]
     #[JMS\Type('int')]
-    #[JMS\Groups(['user:write'])]
+    #[JMS\Groups(['user1', 'elastica'])]
     private int $age;
-
 
     #[ORM\Column(type: 'boolean', nullable: false)]
     #[JMS\Type('bool')]
-    #[JMS\Groups(['user:write'])]
+    #[JMS\Groups(['user1'])]
     #[JMS\SerializedName('isActive')]
     private bool $isActive;
-
 
     #[ORM\Column(type: 'string', length: 1024, nullable: false)]
     private string $roles = '{}';
 
-
-
     #[ORM\Column(type: 'string', length: 32, unique: true, nullable: true)]
     private ?string $token = null;
 
-
-
     #[ORM\Column(type: 'string', length: 11, nullable: true)]
+    #[JMS\Type('string')]
+    #[JMS\Groups(['elastica'])]
     private ?string $phone = null;
 
     #[ORM\Column(type: 'string', length: 128, nullable: true)]
+    #[JMS\Type('string')]
+    #[JMS\Groups(['elastica'])]
     private ?string $email = null;
 
-
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
+    #[JMS\Type('string')]
+    #[JMS\Groups(['elastica'])]
     private ?string $preferred = null;
 
     public function __construct()
@@ -115,11 +107,7 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
         return $this->id;
     }
 
-
-    /**
-     * @param int|null $id
-     */
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -138,8 +126,6 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
         return $this->createdAt;
     }
 
-
-//    #[ORM\PrePersist]
     public function setCreatedAt(): void {
         $this->createdAt = new DateTime();
     }
@@ -148,25 +134,53 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
         return $this->updatedAt;
     }
 
-
-//    #[ORM\PrePersist]
-//    #[ORM\PreUpdate]
     public function setUpdatedAt(): void {
         $this->updatedAt = new DateTime();
     }
 
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
 
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
 
+    public function getAge(): int
+    {
+        return $this->age;
+    }
+
+    public function setAge(int $age): void
+    {
+        $this->age = $age;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): void
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     * @throws JsonException
+     */
     public function toArray(): array
     {
         return [
-            'id'        => $this->id,
-            'login'     => $this->login,
-            'password'  => $this->password,
-            'roles'     => $this->getRoles(),
+            'id' => $this->id,
+            'login' => $this->login,
+            'password' => $this->password,
+            'roles' => $this->getRoles(),
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
-            'tweets'    => array_map(static fn(Tweet $tweet) => $tweet->toArray(), $this->tweets->toArray()),
+            'tweets' => array_map(static fn(Tweet $tweet) => $tweet->toArray(), $this->tweets->toArray()),
             'followers' => array_map(
                 static fn(User $user) => ['id' => $user->getId(), 'login' => $user->getLogin()],
                 $this->followers->toArray()
@@ -177,16 +191,16 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
             ),
             'subscriptionFollowers' => array_map(
                 static fn(Subscription $subscription) => [
-                    'subscriptionId' => $subscription->getId(),
-                    'userId' => $subscription->getFollower()->getId(),
+                    'subscription_id' => $subscription->getId(),
+                    'user_id' => $subscription->getFollower()->getId(),
                     'login' => $subscription->getFollower()->getLogin(),
                 ],
                 $this->subscriptionFollowers->toArray()
             ),
             'subscriptionAuthors' => array_map(
                 static fn(Subscription $subscription) => [
-                    'subscriptionId' => $subscription->getId(),
-                    'userId' => $subscription->getAuthor()->getId(),
+                    'subscription_id' => $subscription->getId(),
+                    'user_id' => $subscription->getAuthor()->getId(),
                     'login' => $subscription->getAuthor()->getLogin(),
                 ],
                 $this->subscriptionAuthors->toArray()
@@ -207,18 +221,6 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
             $this->followers->add($follower);
         }
     }
-
-
-
-    public function removeFollower(User $follower)
-    {
-        if ($this->followers->contains($follower)) {
-            $this->followers->remove($follower);
-        }
-    }
-
-
-
 
     public function addAuthor(User $author): void
     {
@@ -241,156 +243,71 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
         }
     }
 
-
-
     /**
-     * @param string $password
+     * @return User[]
      */
-    public function setPassword(string $password): void
-    {
-        $this->password = $password;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-
-    /**
-     * @param int $age
-     */
-    public function setAge(int $age): void
-    {
-        $this->age = $age;
-    }
-
-
-    /**
-     * @return int
-     */
-    public function getAge(): int
-    {
-        return $this->age;
-    }
-
-
-    /**
-     * @param string $isActive
-     */
-    public function setIsActive(string $isActive): void
-    {
-        $this->isActive = $isActive;
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function IsActive(): bool
-    {
-        return $this->isActive;
-    }
-
-
-    /**
-     * @return array
-    */
     public function getFollowers(): array
     {
         return $this->followers->toArray();
     }
-
-
 
     public function resetFollowers(): void
     {
         $this->followers = new ArrayCollection();
     }
 
-
     /**
      * @return string[]
      *
      * @throws JsonException
-    */
+     */
     public function getRoles(): array
     {
         $roles = json_decode($this->roles, true, 512, JSON_THROW_ON_ERROR);
-
-         // guarantee every user at least has ROLE_USER
+        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
 
-
-
-
     /**
      * @param string[] $roles
      *
      * @throws JsonException
-    */
+     */
     public function setRoles(array $roles): void
     {
         $this->roles = json_encode($roles, JSON_THROW_ON_ERROR);
     }
 
-
-
-    public function getSalt()
+    public function getSalt(): ?string
     {
-         return null;
+        return null;
     }
 
-
-
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
-        // TODO: Implement eraseCredentials() method.
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->login;
     }
 
-
     public function getUserIdentifier(): string
     {
-         return $this->login;
+        return $this->login;
     }
 
-
-
-
-    /**
-     * @return string|null
-    */
     public function getToken(): ?string
     {
         return $this->token;
     }
 
-
-
-    /**
-     * @param string|null $token
-     * @return User
-    */
-    public function setToken(?string $token): static
+    public function setToken(?string $token): void
     {
         $this->token = $token;
-
-        return $this;
     }
-
-
 
     public function getPhone(): ?string
     {
