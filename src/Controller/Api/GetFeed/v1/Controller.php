@@ -3,6 +3,7 @@ namespace App\Controller\Api\GetFeed\v1;
 
 use App\Service\FeedService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +17,7 @@ class Controller extends AbstractFOSRestController
     {
     }
 
-    #[Route(path: '/api/v1/get-feed', methods: ['GET'])]
+    #[Rest\Get(path: '/api/v1/get-feed')]
     #[QueryParam(name: 'userId', requirements: '\d+')]
     #[QueryParam(name: 'count', requirements: '\d+', nullable: true)]
     public function getFeedAction(int $userId, ?int $count = null): View

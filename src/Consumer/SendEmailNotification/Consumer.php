@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Consumer\SendEmailNotification;
 
 use App\Consumer\SendEmailNotification\Input\Message;

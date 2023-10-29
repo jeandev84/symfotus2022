@@ -1,5 +1,6 @@
 <?php
-namespace App\Consumer\PublishTweet;
+
+namespace App\Consumer\PublishTweet\OldConsumer;
 
 use App\Consumer\PublishTweet\Input\Message;
 use App\Consumer\PublishTweet\Output\UpdateFeedMessage;
@@ -15,7 +16,7 @@ use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class Consumer implements ConsumerInterface
+class OldConsumer implements ConsumerInterface
 {
     private EntityManagerInterface $entityManager;
 
@@ -49,6 +50,7 @@ class Consumer implements ConsumerInterface
         }
 
         $tweetRepository = $this->entityManager->getRepository(Tweet::class);
+        $userRepository  = $this->entityManager->getRepository(User::class);
         $tweet = $tweetRepository->find($message->getTweetId());
         if (!($tweet instanceof Tweet)) {
             return $this->reject(sprintf('Tweet ID %s was not found', $message->getTweetId()));
@@ -57,8 +59,12 @@ class Consumer implements ConsumerInterface
         $followerIds = $this->subscriptionService->getFollowerIds($tweet->getAuthor()->getId());
 
         foreach ($followerIds as $followerId) {
-            $message = (new UpdateFeedMessage($tweet->getId(), $followerId))->toAMQPMessage();
-            $this->asyncService->publishToExchange(AsyncService::UPDATE_FEED, $message, (string)$followerId);
+            $this->feedService->putTweet($tweet, $followerId);
+            $user = $userRepository->find($followerId);
+            if ($user instanceof User) {
+                $message = (new SendNotificationDTO($followerId, $tweet->getText()))->toAMQPMessage();
+                $this->asyncService->publishToExchange(AsyncService::SEND_NOTIFICATION, $message, $user->getPreferred());
+            }
         }
 
         $this->entityManager->clear();
