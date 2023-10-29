@@ -140,7 +140,7 @@ services:
        - ./:/app
        - ./docker/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
      working_dir: /app
-     command: [ "supervisord", "-c", "/etc/supervisor/supervisord.conf" ]
+     command: ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 
 volumes:
   dump:
