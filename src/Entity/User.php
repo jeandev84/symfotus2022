@@ -87,7 +87,7 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
 
 
     #[ORM\Column(type: 'string', length: 32, unique: true, nullable: true)]
-    private string $token;
+    private ?string $token = null;
 
 
 
@@ -370,9 +370,9 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
 
 
     /**
-     * @return string
+     * @return string|null
     */
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }
@@ -380,10 +380,10 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
 
 
     /**
-     * @param string $token
+     * @param string|null $token
      * @return User
     */
-    public function setToken(string $token): static
+    public function setToken(?string $token): static
     {
         $this->token = $token;
 
