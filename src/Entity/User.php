@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Entity\Contract\HasMetaTimestampsInterface;
@@ -29,7 +28,7 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 32, unique: true, nullable: false)]
-    #[JMS\Groups(['user1', 'elastica'])]
+    #[JMS\Groups(['user1', 'user_elastica'])]
     private string $login;
 
     #[ORM\Column(name: 'created_at', type: 'datetime', nullable: false)]
@@ -63,7 +62,7 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
 
     #[ORM\Column(type: 'integer', nullable: false)]
     #[JMS\Type('int')]
-    #[JMS\Groups(['user1', 'elastica'])]
+    #[JMS\Groups(['user1', 'user_elastica'])]
     private int $age;
 
     #[ORM\Column(type: 'boolean', nullable: false)]
@@ -80,17 +79,17 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
 
     #[ORM\Column(type: 'string', length: 11, nullable: true)]
     #[JMS\Type('string')]
-    #[JMS\Groups(['elastica'])]
+    #[JMS\Groups(['user_elastica'])]
     private ?string $phone = null;
 
     #[ORM\Column(type: 'string', length: 128, nullable: true)]
     #[JMS\Type('string')]
-    #[JMS\Groups(['elastica'])]
+    #[JMS\Groups(['user_elastica'])]
     private ?string $email = null;
 
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
     #[JMS\Type('string')]
-    #[JMS\Groups(['elastica'])]
+    #[JMS\Groups(['user_elastica'])]
     private ?string $preferred = null;
 
     public function __construct()

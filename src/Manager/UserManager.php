@@ -5,10 +5,12 @@ use App\DTO\SaveUserDTO;
 use App\Entity\User;
 use App\Form\LinkedUserType;
 use App\Repository\UserRepository;
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
+use Elastica\Aggregation\Terms;
+use Elastica\Query;
+use Elastica\Query\QueryString;
+use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
+use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -23,13 +25,20 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserManager
 {
 
-    public function __construct(
-        private EntityManagerInterface $entityManager,
-        private FormFactoryInterface $formFactory,
-        private UserPasswordHasherInterface $userPasswordHasher
-    )
-    {
+    private EntityManagerInterface $entityManager;
 
+    private FormFactoryInterface $formFactory;
+
+    private UserPasswordHasherInterface $userPasswordHasher;
+
+    private PaginatedFinderInterface $finder;
+
+    public function __construct(EntityManagerInterface $entityManager, FormFactoryInterface $formFactory, UserPasswordHasherInterface $userPasswordHasher, PaginatedFinderInterface $finder)
+    {
+        $this->entityManager = $entityManager;
+        $this->formFactory = $formFactory;
+        $this->userPasswordHasher = $userPasswordHasher;
+        $this->finder = $finder;
     }
 
 
@@ -340,6 +349,74 @@ class UserManager
 
 
 
+
+
+    /**
+     * ElasticSearch users by query
+     *
+     * @return User[]
+    */
+    public function findUserByQuery(string $query, int $perPage, int $page): array
+    {
+        $paginatedResult = $this->finder->findPaginated($query);
+        $paginatedResult->setMaxPerPage($perPage);
+        $paginatedResult->setCurrentPage($page);
+        $result = [];
+        array_push($result, ...$paginatedResult->getCurrentPageResults());
+
+        return $result;
+    }
+
+
+
+
+
+    /**
+     * ElasticSearch user with aggregation
+     *
+     * @return User[]
+    */
+    public function findUserWithAggregation(string $field): array
+    {
+        $aggregation = new Terms('notifications');
+        $aggregation->setField($field);
+        $query = new Query();
+        $query->addAggregation($aggregation);
+        $paginatedResult = $this->finder->findPaginated($query);
+        /** @var FantaPaginatorAdapter $adapter */
+        $adapter = $paginatedResult->getAdapter();
+
+        return $adapter->getAggregations();
+    }
+
+
+
+
+    /**
+     * ElasticSearch users by query with aggregation
+     *
+     * @return User[]
+     */
+    public function findUserByQueryWithAggregation(string $queryString, string $field): array
+    {
+        // notifications mean that in our case ( sms or email )
+        $aggregation = new Terms('notifications');
+        $aggregation->setField($field);
+        $query = new Query(new QueryString($queryString));
+        $query->addAggregation($aggregation);
+        $paginatedResult = $this->finder->findPaginated($query);
+        /** @var FantaPaginatorAdapter $adapter */
+        $adapter = $paginatedResult->getAdapter();
+
+        return $adapter->getAggregations();
+    }
+
+
+    /**
+     * @param User $author
+     * @param User $follower
+     * @return void
+    */
     public function subscribeUser(User $author, User $follower): void
     {
         $author->addFollower($follower);

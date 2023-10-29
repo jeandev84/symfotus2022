@@ -5,9 +5,10 @@ use App\Repository\TweetRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JMS\Serializer\Annotation as JMS;
+use JsonException;
 
-
-#[ORM\Table(name: '`tweet`')]
+#[ORM\Table(name: 'tweet')]
 #[ORM\Entity(repositoryClass: TweetRepository::class)]
 #[ORM\Index(columns: ['author_id'], name: 'tweet__author_id__ind')]
 class Tweet
@@ -19,17 +20,19 @@ class Tweet
 
     #[ORM\ManyToOne(targetEntity: 'User', inversedBy: 'tweets')]
     #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'id')]
+    #[JMS\Groups(['tweet_elastica'])]
     private User $author;
 
     #[ORM\Column(type: 'string', length: 140, nullable: false)]
+    #[JMS\Groups(['tweet_elastica'])]
     private string $text;
 
     #[ORM\Column(name: 'created_at', type: 'datetime', nullable: false)]
-    #[Gedmo\Timestampable(on: "create")]
+    #[Gedmo\Timestampable(on: 'create')]
     private DateTime $createdAt;
 
     #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: false)]
-    #[Gedmo\Timestampable(on: "update")]
+    #[Gedmo\Timestampable(on: 'update')]
     private DateTime $updatedAt;
 
     public function getId(): int
@@ -37,17 +40,10 @@ class Tweet
         return $this->id;
     }
 
-
-    /**
-     * @param int|null $id
-     */
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
-
-
-
 
     public function getAuthor(): User
     {
@@ -90,16 +86,12 @@ class Tweet
         return [
             'id' => $this->id,
             'login' => $this->author->getLogin(),
-            'text'  => $this->text,
+            'text' => $this->text,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
         ];
     }
 
-
-    /**
-     * @return array
-    */
     public function toFeed(): array
     {
         return [
@@ -110,11 +102,8 @@ class Tweet
         ];
     }
 
-
-
-
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function toAMPQMessage(): string
     {
