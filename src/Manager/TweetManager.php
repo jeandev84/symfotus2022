@@ -8,7 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\CacheException;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Cache\InvalidArgumentException;
-use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
+#use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 class TweetManager
@@ -19,7 +20,7 @@ class TweetManager
 
     public function __construct(
         protected EntityManagerInterface $entityManager,
-        protected TagAwareAdapterInterface $cache
+        protected TagAwareCacheInterface $cache
     )
     {
     }
@@ -82,5 +83,19 @@ class TweetManager
           $this->cache->invalidateTags([self::CACHE_TAG]);
 
           return $tweet;
+    }
+
+
+
+    /**
+     * @param int[] $authorIds
+     *
+     * @return Tweet[]
+    */
+    public function getFeed(array $authorIds, int $count): array {
+        /** @var TweetRepository $tweetRepository */
+        $tweetRepository = $this->entityManager->getRepository(Tweet::class);
+
+        return $tweetRepository->getByAuthorIds($authorIds, $count);
     }
 }

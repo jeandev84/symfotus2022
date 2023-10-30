@@ -1,7 +1,5 @@
 <?php
-namespace App\Service\Factory;
-
-use App\Service\FormatService;
+namespace App\Service;
 
 class FormatServiceFactory
 {

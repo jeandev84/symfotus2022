@@ -42,17 +42,17 @@ services:
 
     strong_formatter:
         class: App\Service\FormatService
-        factory: ['App\Service\Factory\FormatServiceFactory', 'strongFormatService']
+        factory: ['App\Service\FormatServiceFactory', 'strongFormatService']
 
 
     cite_formatter:
         class: App\Service\FormatService
-        factory: ['@App\Service\Factory\FormatServiceFactory', 'citeFormatService']
+        factory: ['@App\Service\FormatServiceFactory', 'citeFormatService']
 
 
     main_header_formatter:
         class: App\Service\FormatService
-        factory: ['@App\Service\Factory\FormatServiceFactory', 'headerFormatService']
+        factory: ['@App\Service\FormatServiceFactory', 'headerFormatService']
         arguments: [1]
 
 #    example_using_set_tag_formatter:
