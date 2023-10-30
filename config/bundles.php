@@ -18,4 +18,5 @@ return [
     Sentry\SentryBundle\SentryBundle::class => ['prod' => true],
     OldSound\RabbitMqBundle\OldSoundRabbitMqBundle::class => ['all' => true],
     FOS\ElasticaBundle\FOSElasticaBundle::class => ['all' => true],
+    Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
 ];

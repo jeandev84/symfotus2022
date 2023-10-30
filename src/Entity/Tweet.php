@@ -70,7 +70,7 @@ class Tweet
     }
 
     public function setCreatedAt(): void {
-        $this->createdAt = new DateTime();
+        $this->createdAt = DateTime::createFromFormat('U', (string)time());
     }
 
     public function getUpdatedAt(): DateTime {
@@ -96,9 +96,9 @@ class Tweet
     {
         return [
             'id' => $this->id,
-            'author' => $this->getAuthor()->getLogin(),
+            'author' => isset($this->author) ? $this->getAuthor()->getLogin() : null,
             'text' => $this->text,
-            'createdAt' => $this->createdAt->format('Y-m-d h:i:s'),
+            'createdAt' => isset($this->createdAt) ? $this->createdAt->format('Y-m-d h:i:s') : '',
         ];
     }
 

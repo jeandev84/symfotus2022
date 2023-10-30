@@ -30,18 +30,18 @@ services:
     # DI formatters
     strong_formatter:
         class: App\Service\FormatService
-        factory: ['App\Service\Factory\FormatServiceFactory', 'strongFormatService']
+        factory: ['App\Service\FormatServiceFactory', 'strongFormatService']
         tags: ['app.formatter_service']
 
 
     cite_formatter:
         class: App\Service\FormatService
-        factory: ['@App\Service\Factory\FormatServiceFactory', 'citeFormatService']
+        factory: ['@App\Service\FormatServiceFactory', 'citeFormatService']
 
 
     main_header_formatter:
         class: App\Service\FormatService
-        factory: ['@App\Service\Factory\FormatServiceFactory', 'headerFormatService']
+        factory: ['@App\Service\FormatServiceFactory', 'headerFormatService']
         arguments:
             $level: 1
         tags: ['app.formatter_service']
@@ -107,8 +107,6 @@ services:
     App\Service\AuthService:
         arguments:
             $tokenTTL: '%env(JWT_TTL_SEC)%'
-
-
 
     # форматирование ошибок в monolog (./var/log/dev.log)
     monolog.formatter.app_formatter:

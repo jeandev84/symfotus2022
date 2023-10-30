@@ -119,33 +119,33 @@ class SubscriptionService
 
 
 
-//    /**
-//     * @return int[]
-//    */
-//    public function getAuthorIds(int $followerId): array
-//    {
-//        $subscriptions = $this->getSubscriptionsByFollowerId($followerId);
-//        $mapper = static function(Subscription $subscription) {
-//            return $subscription->getAuthor()->getId();
-//        };
-//
-//        return array_map($mapper, $subscriptions);
-//    }
-//
-//
-//
-//
-//    /**
-//     * @return Subscription[]
-//    */
-//    private function getSubscriptionsByFollowerId(int $followerId): array
-//    {
-//        $follower = $this->userManager->getUserById($followerId);
-//        if (!($follower instanceof User)) {
-//            return [];
-//        }
-//        return $this->subscriptionManager->findAllByFollower($follower);
-//    }
+    /**
+     * @return int[]
+    */
+    public function getAuthorIds(int $followerId): array
+    {
+        $subscriptions = $this->getSubscriptionsByFollowerId($followerId);
+        $mapper = static function(Subscription $subscription) {
+            return $subscription->getAuthor()->getId();
+        };
+
+        return array_map($mapper, $subscriptions);
+    }
+
+
+
+
+    /**
+     * @return Subscription[]
+    */
+    private function getSubscriptionsByFollowerId(int $followerId): array
+    {
+        $follower = $this->userManager->getUserById($followerId);
+        if (!($follower instanceof User)) {
+            return [];
+        }
+        return $this->subscriptionManager->findAllByFollower($follower);
+    }
 
 
 

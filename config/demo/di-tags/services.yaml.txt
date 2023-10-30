@@ -64,18 +64,18 @@ services:
     # DI formatters
     strong_formatter:
         class: App\Service\FormatService
-        factory: ['App\Service\Factory\FormatServiceFactory', 'strongFormatService']
+        factory: ['App\Service\FormatServiceFactory', 'strongFormatService']
         tags: ['app.formatter_service']
 
 
     cite_formatter:
         class: App\Service\FormatService
-        factory: ['@App\Service\Factory\FormatServiceFactory', 'citeFormatService']
+        factory: ['@App\Service\FormatServiceFactory', 'citeFormatService']
 
 
     main_header_formatter:
         class: App\Service\FormatService
-        factory: ['@App\Service\Factory\FormatServiceFactory', 'headerFormatService']
+        factory: ['@App\Service\FormatServiceFactory', 'headerFormatService']
         arguments: [1]
         tags: ['app.formatter_service']
 
