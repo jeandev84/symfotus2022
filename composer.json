@@ -7,6 +7,7 @@
         "php": ">=7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "codeception/codeception": "^5.0",
         "doctrine/annotations": "*",
         "doctrine/doctrine-bundle": "^2.5",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
@@ -63,7 +64,10 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "UnitTests\\": "tests/unit"
+            "UnitTests\\": "tests/phpunit",
+            "CodeceptionUnitTests\\": "tests/unit",
+            "IntegrationTests\\": "tests/functional",
+            "AcceptanceTests\\": "tests/acceptance"
         }
     },
     "replace": {
@@ -93,6 +97,12 @@
         }
     },
     "require-dev": {
+        "codeception/module-asserts": "^3.0",
+        "codeception/module-datafactory": "^3.0",
+        "codeception/module-doctrine2": "^3.0",
+        "codeception/module-phpbrowser": "^3.0",
+        "codeception/module-rest": "^3.3",
+        "codeception/module-symfony": "^3.1",
         "symfony/stopwatch": "5.4.*"
     }
 }

@@ -1,21 +1,23 @@
 <?php
-namespace CodeceptionUnitTests\Service;
+namespace UnitTests\Service;
 
 use App\Entity\User;
 use App\Manager\SubscriptionManager;
 use App\Manager\UserManager;
 use App\Service\SubscriptionService;
-use Codeception\Test\Unit;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 use Mockery;
 use Mockery\MockInterface;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class SubscriptionServiceTest extends Unit
+class SubscriptionServiceTest extends TestCase
 {
+
+    # MockeryPHPUnitIntegration позволяет работать с Mock без рисков
     use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
     /** @var EntityManagerInterface|MockInterface */

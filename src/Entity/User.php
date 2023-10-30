@@ -18,6 +18,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\HasLifecycleCallbacks]
 class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthenticatedUserInterface
 {
+    // User preferred 'email|sms'
     public const EMAIL_NOTIFICATION = 'email';
     public const SMS_NOTIFICATION = 'sms';
 
