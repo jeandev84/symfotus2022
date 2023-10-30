@@ -35,6 +35,14 @@ when@dev:
                 type: service
                 id: Symfony\Bridge\Monolog\Handler\ElasticsearchLogstashHandler
                 channels: elasticsearch
+            deprecation:
+                type: stream
+                path: "%kernel.logs_dir%/%kernel.environment%.deprecations.log"
+            deprecation_filter:
+                type: filter
+                handler: deprecation
+                max_level: info
+                channels: ["php"]
 
 services:
     Psr\Log\NullLogger:

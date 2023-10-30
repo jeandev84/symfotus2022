@@ -30,6 +30,7 @@
         "symfony/form": "5.4.*",
         "symfony/framework-bundle": "5.4.*",
         "symfony/http-client": "5.4.*",
+        "symfony/lock": "5.4.*",
         "symfony/maker-bundle": "^1.48",
         "symfony/monolog-bundle": "*",
         "symfony/phpunit-bridge": "^6.3",
