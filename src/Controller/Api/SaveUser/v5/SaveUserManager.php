@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller\Api\SaveUser\v5;
 
-use App\Client\StatsdAPIClient;
+use StatsdBundle\Client\StatsdAPIClient;
 use App\Controller\Api\SaveUser\v5\Output\UserIsSavedDTO;
 use App\Controller\Api\SaveUser\v5\Input\SaveUserDTO;
 use App\Entity\User;
@@ -17,21 +17,21 @@ class SaveUserManager
 
     private EntityManagerInterface $entityManager;
     private SerializerInterface $serializer;
-    private UserPasswordHasherInterface $userPasswordHasher;
+    private UserPasswordHasherInterface $userPasswordEncoder;
     private LoggerInterface $logger;
     private StatsdAPIClient $statsdAPIClient;
 
     public function __construct(
-        EntityManagerInterface $entityManager,
-        SerializerInterface $serializer,
-        UserPasswordHasherInterface $userPasswordHasher,
-        LoggerInterface $elasticsearchLogger,
-        StatsdAPIClient $statsdAPIClient
+        EntityManagerInterface      $entityManager,
+        SerializerInterface         $serializer,
+        UserPasswordHasherInterface $userPasswordEncoder,
+        LoggerInterface             $elasticsearchLogger,
+        StatsdAPIClient             $statsdAPIClient
     )
     {
         $this->entityManager = $entityManager;
         $this->serializer    = $serializer;
-        $this->userPasswordHasher = $userPasswordHasher;
+        $this->userPasswordEncoder = $userPasswordEncoder;
         $this->logger = $elasticsearchLogger;
         $this->statsdAPIClient = $statsdAPIClient;
     }
@@ -57,6 +57,9 @@ class SaveUserManager
         $result = new UserIsSavedDTO();
         $context = (new SerializationContext())->setGroups(['user1', 'user2']);
         $result->loadFromJsonString($this->serializer->serialize($user, 'json', $context));
+
+        // graphite
+        $this->statsdAPIClient->increment('save_user.v5');
 
         return $result;
     }
@@ -87,7 +90,7 @@ class SaveUserManager
         // Create user
         $user = new User();
         $user->setLogin($saveUserDTO->login);
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, $saveUserDTO->password));
+        $user->setPassword($this->userPasswordEncoder->hashPassword($user, $saveUserDTO->password));
         $user->setRoles($saveUserDTO->roles);
         $user->setAge($saveUserDTO->age);
         $user->setIsActive($saveUserDTO->isActive);
