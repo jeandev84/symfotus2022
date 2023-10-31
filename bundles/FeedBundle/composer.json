@@ -1,0 +1,14 @@
+{
+  "name": "jeandev84/feed-bundle",
+  "description": "Provides configured feed client",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "require": {
+    "php": ">=7.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "FeedBundle\\": ""
+    }
+  }
+}

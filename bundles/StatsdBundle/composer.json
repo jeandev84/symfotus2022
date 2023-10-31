@@ -1,0 +1,15 @@
+{
+    "name": "jeandev84/statds-bundle",
+    "description": "Provides configured StatsdAPIClient",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.4",
+        "../../vendor/slickdeals/statsd": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+           "StatsdBundle\\": ""
+        }
+    }
+}

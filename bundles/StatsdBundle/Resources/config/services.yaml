@@ -1,0 +1,7 @@
+services:
+
+  StatsdBundle\Client\StatsdAPIClient:
+    arguments:
+      - statsd_host
+      - statsd_port
+      - statsd_namespace
