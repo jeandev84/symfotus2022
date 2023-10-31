@@ -205,3 +205,18 @@ services:
     App\Manager\UserManager:
         arguments:
             $finder: '@fos_elastica.finder.user'
+
+    # Use service from api-client
+#    SomeServiceConfig:
+#        class: MyNamespace\Configuration
+#        calls:
+#            - [setHost]
+#            - [setUsername]
+#
+#    # inject this service and use it in my code
+#    SomeServiceApiClient:
+#        class: MyNamespace\Api\DefaultApi
+#        arguments:
+#            - '@guzzle.client'
+#            - '@SomeServiceConfig'
+#            - ...
