@@ -6,6 +6,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
+
+    # используется для валидации параметры
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('statsd');

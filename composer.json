@@ -60,8 +60,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/",
-            "StatsdBundle\\": "bundles/StatsdBundle"
+            "App\\": "src/"
         }
     },
     "autoload-dev": {
@@ -106,5 +105,11 @@
         "codeception/module-rest": "^3.3",
         "codeception/module-symfony": "^3.1",
         "symfony/stopwatch": "5.4.*"
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:jeandev84/statsd-bundle.git"
+        }
+    ]
 }
