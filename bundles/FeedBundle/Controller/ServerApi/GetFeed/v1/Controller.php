@@ -1,5 +1,4 @@
 <?php
-
 namespace FeedBundle\Controller\ServerApi\GetFeed\v1;
 
 use FeedBundle\Service\FeedService;

@@ -150,17 +150,10 @@ services:
         arguments:
             $finder: '@fos_elastica.finder.user'
 
-    # Use service from api-client
-#    SomeServiceConfig:
-#        class: MyNamespace\Configuration
-#        calls:
-#            - [setHost]
-#            - [setUsername]
-#
-#    # inject this service and use it in my code
-#    SomeServiceApiClient:
-#        class: MyNamespace\Api\DefaultApi
-#        arguments:
-#            - '@guzzle.client'
-#            - '@SomeServiceConfig'
-#            - ...
+    feed_http_client:
+        class: GuzzleHttp\Client
+
+    App\Client\FeedClient:
+        arguments:
+            - '@feed_http_client'
+            - 'http://nginx:80'
