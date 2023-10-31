@@ -18,6 +18,7 @@
         "jms/serializer-bundle": "^5.2",
         "lexik/jwt-authentication-bundle": "^2.18",
         "mockery/mockery": "^1.6",
+        "nelmio/api-doc-bundle": "^4.12",
         "nyholm/psr7": "*",
         "php-amqplib/rabbitmq-bundle": "^2.11",
         "sensio/framework-extra-bundle": "^6.2",

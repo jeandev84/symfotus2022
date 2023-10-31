@@ -4,22 +4,33 @@ namespace App\Controller\Api\GetFeed\v1;
 use App\Service\FeedService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\View\View;
-use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
+# use OpenApi\Attributes as OA;
 
 class Controller extends AbstractFOSRestController
 {
     /** @var int */
     private const DEFAULT_FEED_SIZE = 20;
 
-    public function __construct(private FeedService $feedService)
+    private FeedService $feedService;
+
+    public function __construct(FeedService $feedService)
     {
+        $this->feedService = $feedService;
     }
 
     #[Rest\Get(path: '/api/v1/get-feed')]
-    #[QueryParam(name: 'userId', requirements: '\d+')]
-    #[QueryParam(name: 'count', requirements: '\d+', nullable: true)]
+    /**
+     * @Rest\QueryParam(name="userId", requirements="\d+")
+     * @Rest\QueryParam(name="count", requirements="\d+")
+     * @OA\Get(
+     *     operationId="getFeed",
+     *     tags={"Лента"},
+     *     @OA\Parameter(name="userId", in="query", description="ID пользователя", example="135"),
+     *     @OA\Parameter(name="count", in="query", description="Количество твитов в ленте", example="5")
+     * )
+     */
     public function getFeedAction(int $userId, ?int $count = null): View
     {
         $count = $count ?? self::DEFAULT_FEED_SIZE;

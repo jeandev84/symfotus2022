@@ -1,0 +1,10 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: API Tweets microservice
+            description: This is an awesome app!
+            version: 1.0.0
+    areas: # to filter documented areas
+        path_patterns:
+            #- ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+            - ^/api(?!/doc(.json)?$) # скрыт /api/doc.json из списки http://localhost:7777/api/doc
