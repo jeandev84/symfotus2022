@@ -60,7 +60,9 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "App\\": "src/",
+            "FeedBundle\\": "bundles/FeedBundle",
+            "Generated\\": "src/_GENERATED"
         }
     },
     "autoload-dev": {
@@ -110,10 +112,6 @@
         {
             "type": "vcs",
             "url": "git@github.com:jeandev84/statsd-bundle.git"
-        },
-        {
-            "type": "vcs",
-            "url": "git@github.com:jeandev84/feed-bundle.git"
         }
     ]
 }
