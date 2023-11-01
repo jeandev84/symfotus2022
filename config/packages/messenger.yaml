@@ -5,6 +5,13 @@ framework:
 
         # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
         # failure_transport: failed
+        buses:
+            # middleware которые сработают когда забываем например закрыт соединение к базу
+            messenger.bus.default:
+                middleware:
+                    - doctrine_ping_connection
+                    - doctrine_close_connection
+                    - doctrine_transaction
         #serializer:
             #default_serializer: messenger.transport.symfony_serializer
 
@@ -32,4 +39,5 @@ framework:
         routing:
             # Route your messages to the transports
             App\DTO\AddFollowersDTO: add_followers
-            FeedBundle\DTO\SendNotificationDTO: send_notification
+            FeedBundle\DTO\SendNotificationDTO: doctrine
+            FeedBundle\DTO\SendNotificationAsyncDTO: send_notification
