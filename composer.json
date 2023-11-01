@@ -16,6 +16,7 @@
         "friendsofsymfony/elastica-bundle": "*",
         "friendsofsymfony/rest-bundle": "^3.5",
         "jms/serializer-bundle": "^5.2",
+        "kunicmarko/jms-messenger-adapter": "^1.1",
         "lexik/jwt-authentication-bundle": "^2.18",
         "mockery/mockery": "^1.6",
         "nelmio/api-doc-bundle": "^4.12",

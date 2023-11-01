@@ -185,6 +185,7 @@ services:
    # generate api-client
    openapi-generator:
      image: openapitools/openapi-generator-cli:latest
+     container_name: 'openapi-generator'
      volumes:
        - ./:/local
      command: ["generate", "-i", "/local/apidoc.yaml", "-g", "php", "-o", "/local/api-client"]

@@ -35,6 +35,8 @@ final class Message
         return $this->followerId;
     }
 
+
+    // Routing key
     public function getPreferred(): string
     {
         return $this->preferred;
