@@ -2,44 +2,46 @@ security:
     enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\User: auto
+        Symfony\Component\Security\Core\User\User: plaintext
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
+        users_in_memory:
+            memory:
+                users:
+                    admin:
+                        password: 'my_pass'
+                        roles: 'ROLE_ADMIN'
+                    user:
+                        password: 'other_pass'
+                        roles: 'ROLE_USER'
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: login
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        token:
-            pattern: ^/api/v1/token
-            security: false
         main:
-            lazy: true
+            stateless: true
             provider: app_user_provider
-            #stateless: true
-            security: false
-            custom_authenticator: App\Security\Authenticator\LoginAuthenticator
-            #custom_authenticator: App\Security\Authenticator\ApiTokenAuthenticator
-            #custom_authenticator: App\Security\Authenticator\JwtTokenAuthenticator
-            #logout:
-               #path: app_logout
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            json_login:
+                check_path: /authentication_token
+                username_path: login
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
-          - { path: ^/api/v3/user, roles: ROLE_ADMIN, methods: [DELETE] }
-          - { path: ^/api/v3/user, roles: ROLE_VIEW, methods: [GET] }
-          - { path: ^/api/doc, roles: ROLE_ADMIN }
+          - { path: ^/authentication_token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+          - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 
     role_hierarchy:
         ROLE_ADMIN: ROLE_VIEW
