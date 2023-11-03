@@ -166,3 +166,7 @@ services:
         arguments:
             - '@maker.file_manager'
             - '@builder_factory'
+
+
+    App\Persister\AsyncMessagePersisterDecorator:
+        decorates: 'api_platform.doctrine.orm.data_persister'

@@ -1,6 +1,7 @@
 <?php
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TweetRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -8,9 +9,17 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as JMS;
 use JsonException;
 
+
 #[ORM\Table(name: 'tweet')]
 #[ORM\Entity(repositoryClass: TweetRepository::class)]
 #[ORM\Index(columns: ['author_id'], name: 'tweet__author_id__ind')]
+#[ApiResource(
+    collectionOperations: [
+        'post' => ['status' => 202]
+    ],
+    itemOperations: [],
+    output: false, // ничего не хотим возвращать в случае GET запроса
+)]
 class Tweet
 {
     #[ORM\Column(name: 'id', type: 'bigint', unique: true)]

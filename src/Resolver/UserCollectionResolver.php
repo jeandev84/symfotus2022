@@ -5,6 +5,8 @@ namespace App\Resolver;
 use ApiPlatform\GraphQl\Resolver\QueryCollectionResolverInterface;
 use App\Entity\User;
 
+
+// Resolver для api platform
 class UserCollectionResolver implements QueryCollectionResolverInterface
 {
     private const MASK = '****';

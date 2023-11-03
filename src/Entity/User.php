@@ -5,6 +5,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Odm\Filter\OrderFilter;
+use App\DTO\UserDTO;
 use App\Entity\Contract\HasMetaTimestampsInterface;
 use App\Repository\UserRepository;
 use App\Resolver\UserCollectionResolver;
@@ -36,7 +37,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
         'collectionQuery' => [
             'collection_query' => UserCollectionResolver::class
         ]
-    ]
+    ],
+    output: UserDTO::class, // Мы хотим возвращать UserDTO в случае GET запроса, а не сущность User
 )]
 #[ApiFilter(SearchFilter::class, properties: ['login' => 'partial'])]
 #[ApiFilter(OrderFilter::class, properties: ['login'])]
@@ -122,11 +124,16 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
     private ?bool $isProtected;
 
 
+    #[ORM\OneToMany(mappedBy: 'follower', targetEntity: 'Subscription')]
+    private Collection $followed;
+
+
     public function __construct()
     {
         $this->tweets = new ArrayCollection();
         $this->authors = new ArrayCollection();
         $this->followers = new ArrayCollection();
+        $this->followed = new ArrayCollection();
         $this->subscriptionAuthors = new ArrayCollection();
         $this->subscriptionFollowers = new ArrayCollection();
     }
@@ -380,6 +387,16 @@ class User implements HasMetaTimestampsInterface, UserInterface, PasswordAuthent
     public function setIsProtected(bool $isProtected): void
     {
         $this->isProtected = $isProtected;
+    }
+
+
+
+    /**
+     * @return Subscription[]
+    */
+    public function getFollowed(): array
+    {
+        return $this->followed->getValues();
     }
 
 

@@ -6,6 +6,7 @@ use ApiPlatform\GraphQl\Resolver\QueryItemResolverInterface;
 use App\Entity\User;
 use App\Manager\UserManager;
 
+// Resolver для api platform
 class UserResolver implements QueryItemResolverInterface
 {
     private UserManager $userManager;
